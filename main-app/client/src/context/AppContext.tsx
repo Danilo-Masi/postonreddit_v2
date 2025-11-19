@@ -36,17 +36,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     // Post options
     const [titlePost, setTitlePost] = useState("Nam vitae nunc tellus. Etiam condimentum tristique nisl, eu vehicula");
     const [contentPost, setContentPost] = useState("Etiam vestibulum purus at dui tincidunt, non condimentum arcu tincidunt. Curabitur id quam pharetra, iaculis erat a, aliquet eros. Fusce id aliquam dolor, sed facilisis sem. Aenean mi est, gravida vitae diam vitae, pharetra ornare ipsum. Curabitur lorem nisl, semper et mattis eget, facilisis eu neque. Vestibulum venenatis, sapien vitae");
-    const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([
-        {id:123, name: "r/Entreprenur"},
-        {id:123, name: "r/Entreprenur"},
-        {id:1232, name: "r/EntreprenurRideAlong"},
-        {id:123, name: "r/Entreprenur"},
-        {id:123, name: "r/Entreprenur"},
-        {id:1232, name: "r/EntreprenurRideAlong"},
-        {id:123, name: "r/Entreprenur"},
-        {id:123, name: "r/Entreprenur"},
-        {id:1232, name: "r/EntreprenurRideAlong"},
-    ]);
+    const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([]);
     const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
 
     return (

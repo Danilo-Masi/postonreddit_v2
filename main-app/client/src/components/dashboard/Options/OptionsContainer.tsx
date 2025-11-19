@@ -1,9 +1,9 @@
 import { useIsMobile } from "@/lib/responsive";
 import { ButtonDisabled, ButtonNextSection, ButtonPrevSection } from "../ButtonChangeSection";
-import SubredditsSelect from "./SubredditsSelect";
 import SubredditsSelected from "./SubredditsSelected";
 import { useAppContext } from "@/context/AppContext";
 import FlairsSelect from "./FlairsSelect";
+import SubredditMultiselect from "./SubredditsMultiselect";
 
 export default function OptionsContainer() {
   const isMobile = useIsMobile();
@@ -11,7 +11,7 @@ export default function OptionsContainer() {
 
   return (
     <div className="w-full md:w-1/3 h-full overflow-scroll flex flex-col md:px-5">
-      <SubredditsSelect />
+      <SubredditMultiselect />
 
       {subredditsSelected.length >= 1 ? (
         <>
