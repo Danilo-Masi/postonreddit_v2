@@ -1,4 +1,3 @@
-// src/Tiptap.tsx
 import { useEditor, EditorContent, EditorContext } from '@tiptap/react'
 import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus'
 import StarterKit from '@tiptap/starter-kit'

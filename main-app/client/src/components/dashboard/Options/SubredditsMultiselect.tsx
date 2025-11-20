@@ -32,7 +32,7 @@ export default function SubredditMultiselect() {
                 <Button
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between bg-zinc-800 border border-zinc-700">
+                    className="w-full h-fit justify-between bg-zinc-800 border border-zinc-700">
                     {values.length === 0
                         ? "Select subreddits..."
                         : `${values.length} selected`}

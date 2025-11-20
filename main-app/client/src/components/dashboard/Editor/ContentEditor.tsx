@@ -1,7 +1,7 @@
-import Tiptap from "./tiptap/TipTap";
-
 export default function ContentEditor() {
   return (
-    <Tiptap />
+    <div className="w-full h-full bg-zinc-800">
+      ciao
+    </div>
   )
 }

@@ -2,12 +2,14 @@ import { useIsMobile } from "@/lib/responsive"
 import { ButtonNextSection } from "../ButtonChangeSection";
 import TitleEditor from "./TitleEditor";
 import ContentEditor from "./ContentEditor";
+import ProgressBar from "../ProgressBar";
 
 export default function EditorContainer() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full md:w-2/3 h-full overflow-scroll flex flex-col gap-8">
+    <div className="w-full md:w-2/3 h-full overflow-scroll flex flex-col gap-5">
+      {isMobile && <ProgressBar />}
       <TitleEditor />
       <ContentEditor />
 

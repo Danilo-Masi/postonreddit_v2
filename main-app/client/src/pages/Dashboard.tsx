@@ -5,7 +5,6 @@ import EditorContainer from "../components/dashboard/Editor/EditorContainer";
 import OptionsContainer from "../components/dashboard/Options/OptionsContainer";
 import ResultContainer from "@/components/dashboard/Result/ResultContainer";
 import ReviewContainer from "@/components/dashboard/Review/ReviewContainer";
-import ProgressBar from "@/components/dashboard/ProgressBar";
 
 export default function Dashboard() {
   const isMobile = useIsMobile();
@@ -39,7 +38,6 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      {isMobile && <ProgressBar />}
       {isMobile ? renderSectionMobile() : renderSectionDesktop()}
     </Layout>
   )

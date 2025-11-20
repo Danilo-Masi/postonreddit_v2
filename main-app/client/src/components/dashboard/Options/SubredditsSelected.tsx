@@ -5,7 +5,7 @@ export default function SubredditsSelected() {
     const { subredditsSelected } = useAppContext();
 
     return (
-        <div className="w-full h-full max-h-auto flex flex-wrap items-start justify-start gap-5 md:gap-3 mb-8">
+        <div className="w-full h-fit max-h-auto flex flex-wrap items-start justify-start gap-5 md:gap-3">
             <h4 className="w-full text-sm font-light text-zinc-300">Subreddits selected</h4>
             {subredditsSelected.map((sub) => (
                 <div
