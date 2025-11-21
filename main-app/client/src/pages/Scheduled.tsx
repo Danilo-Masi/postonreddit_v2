@@ -1,38 +1,40 @@
 import PeriodSelect from "@/components/scheduled/PeriodSelect";
 import Layout from "../components/layout/Layout";
 import PostTemplate from "@/components/scheduled/PostTemplate";
-import { Button } from "@/components/ui/button";
-import { SquareCheckBig } from "lucide-react";
-import { Link } from "react-router-dom";
+import EmptyContainer from "@/components/scheduled/EmptyContainer";
+import { useState } from "react";
+import AlertDeletePost from "@/components/scheduled/AlertDeletePost";
 
 type postType = {
   title: string;
   content: string;
 };
 
-const posts: postType[] = [];
+const posts: postType[] = [
+  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
+  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
+  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
+  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
+];
 
 export default function Scheduled() {
+  const [isAlertDeleteOpen, setAlertDeleteOpen] = useState(false);
+
   return (
     <Layout>
       <PeriodSelect />
-      <div className="w-full h-fit flex flex-wrap gap-3 mt-5">
+      <div className="w-full h-full overflow-scroll flex flex-wrap gap-3 mt-5">
         {posts.length > 0 ? (
           posts.map((post) => (
-            <PostTemplate title={post.title} content={post.content} key={post.title} />
+            <PostTemplate title={post.title} content={post.content} key={post.title} setAlertDeleteOpen={setAlertDeleteOpen}/>
           ))
         ) : (
-          <div className="w-full h-fit flex flex-col items-center justify-center gap-3">
-            <p className="text-sm text-zinc-200">No post scheduled in this period</p>
-            <Button className="text-sm p-5 md:p-3 cursor-pointer bg-orange-600 hover:bg-orange-600/90">
-              <Link to="/" className="flex items-center gap-3">
-                Schedule now
-                <SquareCheckBig />
-              </Link>
-            </Button>
-          </div>
+          <EmptyContainer />
         )}
       </div>
+
+      <AlertDeletePost isAlertDeleteOpen={isAlertDeleteOpen} setAlertDeleteOpen={setAlertDeleteOpen} />
+
     </Layout>
   )
 }

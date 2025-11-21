@@ -25,6 +25,9 @@ type AppContextType = {
     setSubredditsSelected: Dispatch<SetStateAction<SubredditType[]>>;
     flairsSelected: FlairType[];
     setFlairsSelected: Dispatch<SetStateAction<FlairType[]>>;
+    // Test
+    isPaymentSuccess: boolean;
+    setPaymentSuccess: Dispatch<SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -37,14 +40,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [titlePost, setTitlePost] = useState("Nam vitae nunc tellus. Etiam condimentum tristique nisl, eu vehicula");
     const [contentPost, setContentPost] = useState("Etiam vestibulum purus at dui tincidunt, non condimentum arcu tincidunt. Curabitur id quam pharetra, iaculis erat a, aliquet eros. Fusce id aliquam dolor, sed facilisis sem. Aenean mi est, gravida vitae diam vitae, pharetra ornare ipsum. Curabitur lorem nisl, semper et mattis eget, facilisis eu neque. Vestibulum venenatis, sapien vitae");
     const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([
-        { id: 123, name: "r/Entrepreneur" },
-        { id: 123, name: "r/Entrepreneur" },
-        { id: 123, name: "r/Entrepreneur" },
-        { id: 123, name: "r/Entrepreneur" },
-        { id: 123, name: "r/Entrepreneur" },
-        { id: 123, name: "r/Entrepreneur" },
     ]);
     const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
+    // Test
+    const [isPaymentSuccess, setPaymentSuccess] = useState<boolean>(false);
 
     return (
         <AppContext.Provider
@@ -62,7 +61,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 subredditsSelected,
                 setSubredditsSelected,
                 flairsSelected,
-                setFlairsSelected
+                setFlairsSelected,
+                // Test
+                isPaymentSuccess,
+                setPaymentSuccess,
             }}>
             {children}
         </AppContext.Provider>

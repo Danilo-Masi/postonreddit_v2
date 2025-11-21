@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import NavbarMobile from "../Navbar/NavbarMobile";
-import NavbarDesktop from "../Navbar/NavbarDesktop";
+import NavbarMobile from "../navbar/NavbarMobile";
+import NavbarDesktop from "../navbar/NavbarDesktop";
 import { useIsMobile } from "@/lib/responsive";
 
 export default function Layout({ children }: { children: ReactNode }) {

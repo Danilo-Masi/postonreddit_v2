@@ -1,15 +1,9 @@
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function PeriodSelect() {
     return (
         <Select>
-            <SelectTrigger className="w-full md:w-1/3">
+            <SelectTrigger className="w-full md:w-1/3 h-fit">
                 <SelectValue placeholder="Select a time " />
             </SelectTrigger>
             <SelectContent>

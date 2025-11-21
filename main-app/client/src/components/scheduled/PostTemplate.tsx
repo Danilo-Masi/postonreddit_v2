@@ -1,15 +1,9 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "../ui/button"
 import { Ban, SquarePen } from "lucide-react"
+import type { Dispatch, SetStateAction } from "react"
 
-export default function PostTemplate({ title, content }: { title: string, content: string }) {
+export default function PostTemplate({ title, content, setAlertDeleteOpen }: { title: string, content: string, setAlertDeleteOpen: Dispatch<SetStateAction<boolean>> }) {
     return (
         <Card className="w-full md:w-[calc(33%-5px)] h-fit bg-zinc-800 border-zinc-700">
             <CardHeader>
@@ -20,8 +14,16 @@ export default function PostTemplate({ title, content }: { title: string, conten
                 {content}
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-                <Button><SquarePen /> Edit</Button>
-                <Button variant="destructive"><Ban />Cancel</Button>
+                <Button
+                    className="cursor-pointer">
+                    <SquarePen /> Edit
+                </Button>
+                <Button
+                    className="cursor-pointer"
+                    variant="destructive"
+                    onClick={() => setAlertDeleteOpen(true)}>
+                    <Ban />Delete
+                </Button>
             </CardFooter>
         </Card>
     )
