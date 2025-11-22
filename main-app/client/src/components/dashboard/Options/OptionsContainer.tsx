@@ -11,14 +11,13 @@ export default function OptionsContainer() {
   const { subredditsSelected } = useAppContext();
 
   return (
-    <div className="w-full md:w-1/3 h-full overflow-scroll flex flex-col gap-5 md:px-5">
+    <div className="w-full md:w-[calc(35%-10px)] h-full overflow-scroll flex flex-col gap-5">
       {isMobile && <ProgressBar />}
-
-      <SubredditMultiselect />
 
       {subredditsSelected.length >= 1 ? (
         <>
           <div className="w-full h-full flex flex-col gap-8 overflow-scroll">
+            <SubredditMultiselect />
             <SubredditsSelected />
             {subredditsSelected.map((sub) => (
               <FlairsSelect subName={sub.name} key={sub.id} />
@@ -32,6 +31,7 @@ export default function OptionsContainer() {
         </>
       ) : (
         <>
+          <SubredditMultiselect />
           <div className="w-full h-full flex items-center justify-center text-zinc-100">
             No subreddits selected yet
           </div>

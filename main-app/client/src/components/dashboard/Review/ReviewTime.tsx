@@ -1,18 +1,14 @@
-import { Input } from "@/components/ui/input";
-
 export default function ReviewTime({ subreddit }: { subreddit: string }) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const day = today.getDay();
+
     return (
-        <div className="w-full flex justify-between items-center mb-5">
-            <p className="text-zinc-200 font-medium text-sm">{subreddit}</p>
-            <Input
-                type="time"
-                id="time-picker"
-                step={900}
-                defaultValue="10:30"
-                className="w-fit bg-zinc-800 border-zinc-700 text-zinc-200 appearance-none 
-            [&::-webkit-calendar-picker-indicator]:hidden 
-            [&::-webkit-calendar-picker-indicator]:appearance-none"
-            />
+        <div className="w-full flex flex-wrap items-center justify-between gap-y-1 mb-5">
+            <p className="text-zinc-100 font-medium text-md min-w-1/2">{subreddit}</p>
+            <p className="text-zinc-300 font-medium text-sm min-w-fit">build in public</p>
+            <p className="text-zinc-300 font-medium text-sm w-full">{`${day}/${month}/${year}`} - 10:30</p>
         </div>
     )
 }

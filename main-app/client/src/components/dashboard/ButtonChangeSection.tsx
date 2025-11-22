@@ -38,7 +38,7 @@ export function ButtonNextSection() {
     return (
         <Button
             onClick={goForward}
-            className="w-full text-sm p-6 md:p-3 bg-orange-600 hover:bg-orange-600/90 cursor-pointer">
+            className="w-full text-sm p-6 md:p-3 bg-orange-600 hover:bg-orange-600/30 cursor-pointer">
             Next step
             <ArrowRight />
         </Button>
@@ -50,7 +50,7 @@ export function ButtonPrevSection() {
     return (
         <Button
             onClick={goBackward}
-            className="w-full text-sm p-6 md:p-3 bg-zinc-950 hover:bg-zinc-950/60 cursor-pointer">
+            className="w-full text-sm p-6 md:p-3 bg-zinc-950 hover:bg-zinc-950/30 cursor-pointer">
             <ArrowLeft />
             Previous step
         </Button>

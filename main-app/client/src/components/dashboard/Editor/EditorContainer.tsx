@@ -8,7 +8,7 @@ export default function EditorContainer() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full md:w-2/3 h-full overflow-scroll flex flex-col gap-5">
+    <div className="w-full md:w-[calc(65%-10px)] h-full overflow-scroll flex flex-col gap-5">
       {isMobile && <ProgressBar />}
       <TitleEditor />
       <ContentEditor />

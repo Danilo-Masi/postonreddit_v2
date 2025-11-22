@@ -23,10 +23,10 @@ export default function Scheduled() {
   return (
     <Layout>
       <PeriodSelect />
-      <div className="w-full h-full overflow-scroll flex flex-wrap gap-3 mt-5">
+      <div className="w-full h-auto min-h-full flex flex-wrap gap-3 mt-5">
         {posts.length > 0 ? (
           posts.map((post) => (
-            <PostTemplate title={post.title} content={post.content} key={post.title} setAlertDeleteOpen={setAlertDeleteOpen}/>
+            <PostTemplate title={post.title} content={post.content} key={post.title} setAlertDeleteOpen={setAlertDeleteOpen} />
           ))
         ) : (
           <EmptyContainer />

@@ -10,11 +10,11 @@ export default function ReviewContainer() {
   const { titlePost, contentPost, subredditsSelected } = useAppContext();
 
   return (
-    <div className="w-full md:w-1/3 h-full overflow-scroll flex flex-col gap-5 md:px-5 ">
+    <div className="w-full md:w-[calc(35%-10px)] h-full overflow-scroll flex flex-col gap-5">
       {isMobile && <ProgressBar />}
       <div className="w-full h-full overflow-scroll flex flex-col gap-3">
-        <h2 className="text-xl font-semibold text-zinc-100 mb-5">{titlePost}</h2>
-        <p className="text-md font-light text-zinc-300 mb-5">{contentPost}</p>
+        <h2 className="text-2xl font-semibold text-zinc-100 text-balance">{titlePost}</h2>
+        <p className="text-md font-light text-zinc-300 mb-5 text-balance">{contentPost}</p>
         {subredditsSelected.map((sub) => (
           <ReviewTime subreddit={sub.name} key={sub.id} />
         ))}
