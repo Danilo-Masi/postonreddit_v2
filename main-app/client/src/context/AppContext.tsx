@@ -41,7 +41,16 @@ Whoa, whoa, slow down, take your hands off that keyboard! Don’t go typing out 
 But here’s the thing I can’t shake: how many lives do we get? One. Not one and a half. Not two. Just one. So why the hell would I keep putting my dreams on hold—waiting for summer, for vacation days, for the next weekend? Why wait for the “perfect time” that might never come?
 I’ve decided to start now. Tonight, if I have to. Yeah, I’ll lose sleep, but not over some boring project or a dead-end job. I’m losing sleep over something bigger—a passion, a vision, a plan for my life that’s crystal clear in my head. A dream that just needs me to make it real.
 So if you’ve read this far, wish me luck. And if you’re anything like me, grab that thing you love and make it happen. And if it doesn’t work out? Screw it—start again!`);
-    const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([]);
+    const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([
+        {
+            id: 1,
+            name: "r/funny",
+        },
+        {
+            id: 2,
+            name: "r/AskReddit",
+        },
+    ]);
     const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
 
     return (
