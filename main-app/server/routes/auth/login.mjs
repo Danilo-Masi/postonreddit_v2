@@ -1,13 +1,10 @@
 import { supabase } from "../../config/supabase.mjs";
 
 export default async function loginRoute(fastify) {
-
     fastify.post("/login", async (request, reply) => {
-
         const { email, password } = request.body;
-
         if (!email || !password) {
-            request.log.error("Error handling credentials");
+            request.log.error("Missing email or password");
             return reply.status(400).send({
                 ok: false,
                 error: "Missing email or password",
@@ -20,24 +17,38 @@ export default async function loginRoute(fastify) {
                 password,
             });
 
-            if (error || !data.session.access_token) {
-                request.log.error("Error handling login supabase function");
+            if (error || !data?.session) {
+                request.log.error("Supabase login failed", error);
                 return reply.status(401).send({
                     ok: false,
-                    error: "Login fault",
+                    error: "Invalid credentials",
                 });
             }
 
-            return reply.status(200).send({
-                token: data.session.access_token,
-            });
+            const { access_token, refresh_token } = data.session;
 
-        } catch (error) {
-            request.log.error("Error handling server login");
+            reply
+                .setCookie("access_token", access_token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none",
+                    path: "/",
+                    maxAge: 60 * 60 * 24 * 7
+                })
+                .setCookie("refresh_token", refresh_token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none",
+                    path: "/",
+                    maxAge: 60 * 60 * 24 * 30
+                })
+                .send({ ok: true });
+        } catch (err) {
+            request.log.error({ err }, "Internal server error");
             return reply.status(500).send({
                 ok: false,
-                error: "Server fault",
-            })
+                error: "Server error",
+            });
         }
     });
 }

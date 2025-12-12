@@ -1,9 +1,22 @@
 import Fastify from "fastify";
 import 'dotenv/config';
+import fastifyCookie from "@fastify/cookie";
+import fastifyCors from "@fastify/cors";
 import authRoutes from "./routes/auth/auth.mjs";
 import userRoute from "./routes/user/user.mjs";
 
 const fastify = Fastify({ logger: true });
+
+fastify.register(fastifyCors, {
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+});
+
+fastify.register(fastifyCookie, {
+    secret: process.env.COOKIE_SECRET,
+    hook: "onRequest"
+});
 
 fastify.register(authRoutes, { prefix: "/auth" });
 fastify.register(userRoute, { prefix: "/user" });
