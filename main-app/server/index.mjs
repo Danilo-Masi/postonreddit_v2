@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import 'dotenv/config';
 import authRoutes from "./routes/auth/auth.mjs";
 import userRoute from "./routes/user/user.mjs";
 
