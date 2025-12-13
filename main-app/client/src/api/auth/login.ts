@@ -10,12 +10,12 @@ export async function loginFunction(email: string, password: string) {
         const data = await res.json();
 
         if (!res.ok) {
-            return { ok: false, error: data.error };
+            return { ok: false, error: data.error || "Login failed" };
         }
 
-        return { ok: true };
+        return { ok: true, user: data.user };
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Network error: ", error);
         return { ok: false, error: "Network error" };
     }
