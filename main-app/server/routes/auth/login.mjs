@@ -1,6 +1,7 @@
 import { supabase } from "../../config/supabase.mjs";
 
 export default async function loginRoute(fastify) {
+
     fastify.post("/login", async (request, reply) => {
         const { email, password } = request.body;
         if (!email || !password) {
@@ -42,7 +43,13 @@ export default async function loginRoute(fastify) {
                     path: "/",
                     maxAge: 60 * 60 * 24 * 30
                 })
-                .send({ ok: true });
+                .send({
+                    ok: true,
+                    user: {
+                        id: data.user.id,
+                        email: data.user.email,
+                    }
+                });
         } catch (err) {
             request.log.error({ err }, "Internal server error");
             return reply.status(500).send({

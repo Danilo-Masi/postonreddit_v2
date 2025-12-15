@@ -13,7 +13,7 @@ export async function loginFunction(email: string, password: string) {
             return { ok: false, error: data.error || "Login failed" };
         }
 
-        return { ok: true, user: data.user };
+        return data;
 
     } catch (error: any) {
         console.error("Network error: ", error);

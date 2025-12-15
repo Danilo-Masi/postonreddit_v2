@@ -8,7 +8,6 @@ import { loginFunction } from "../../api/auth/login.ts";
 import { z } from "zod";
 import { Spinner } from "../ui/spinner.tsx";
 import { useAuth } from "@/context/AuthContext.tsx";
-import { meFunction } from "@/api/user/me.ts";
 
 export default function LoginOuth() {
     const navigate = useNavigate();
@@ -42,17 +41,7 @@ export default function LoginOuth() {
                 return;
             }
 
-            let userData = result.user;
-            if (!userData) {
-                const data = await meFunction();
-                userData = data?.user;
-                if (!userData) {
-                    setError("User data missing");
-                    return;
-                }
-            }
-
-            login(userData);
+            login(result.user);
             navigate("/", { replace: true });
         } catch (err: any) {
             console.error(err);
