@@ -1,9 +1,13 @@
 import Fastify from "fastify";
 import 'dotenv/config';
-import fastifyCookie from "@fastify/cookie";
+// Cors plugin
 import fastifyCors from "@fastify/cors";
+// Cookie plugin
+import fastifyCookie from "@fastify/cookie";
+// Routes
 import authRoutes from "./routes/auth/auth.mjs";
 import userRoute from "./routes/user/user.mjs";
+import billingRoutes from "./routes/billing/billing.mjs";
 
 const fastify = Fastify({ logger: true });
 
@@ -20,6 +24,7 @@ fastify.register(fastifyCookie, {
 
 fastify.register(authRoutes, { prefix: "/auth" });
 fastify.register(userRoute, { prefix: "/user" });
+fastify.register(billingRoutes, { prefix: "/billing" });
 
 try {
     await fastify.listen({ port: 3000 });

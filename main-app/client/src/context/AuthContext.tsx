@@ -10,6 +10,7 @@ type AuthContextType = {
     loading: boolean;
     login: (userData: User) => void;
     logout: () => void;
+    registration: (userData: User) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextType>({
     loading: true,
     login: () => { },
     logout: () => { },
+    registration: () => { },
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -47,8 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
     }
 
+    const registration = (userData: User) => {
+        setUser(userData);
+    }
+
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, logout, registration }}>
             {children}
         </AuthContext.Provider>
     );

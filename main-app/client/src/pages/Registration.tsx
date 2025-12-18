@@ -4,10 +4,14 @@ import RegistrationOuth from "@/components/outh/RegistrationOuth";
 import LinksOuth from "@/components/outh/LinksOuth";
 
 export default function Registration() {
+
+    const searchParams = new URLSearchParams(location.search);
+    const plan = searchParams.get("plan");
+
     return (
         <LayoutOuth>
             <LogoOuth />
-            <RegistrationOuth />
+            <RegistrationOuth plan={plan} />
             <LinksOuth />
         </LayoutOuth>
     )
