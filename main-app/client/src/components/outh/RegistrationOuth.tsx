@@ -42,7 +42,7 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
         setLoading(true);
 
         try {
-            // 1-️Registrazione utente
+            // 1-️Registrazione utente // TODO Togliere plan e trasferirelo nel checkout
             const result = await registrationFunction(name, email, password, plan);
             if (!result.ok) {
                 setError(result.error || "Registration failed");

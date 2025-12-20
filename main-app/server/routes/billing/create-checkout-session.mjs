@@ -13,16 +13,20 @@ export default async function checkoutSessionRoute(fastify) {
         }
 
         try {
+            console.log("ENV KEY:", process.env.CREEM_TEST_API_KEY);
+            console.log("Product ID:", product_id);
+
             const creem = createCreem({
                 apiKey: process.env.CREEM_TEST_API_KEY,
+                // webhook to be set up later
                 testMode: true, // Set to false for production
             });
 
-            console.error(creem); // Debug log
-
             const checkout = await creem.checkouts.create({
                 productId: product_id,
-                successUrl: "http://127.0.0.1:5173/success",
+                customer: { email: email },
+                successUrl: "http://www.postonreddit.com", // To be updated
+                // metadata to be setup later
             });
 
             console.error(checkout.checkoutUrl); // Debug log
