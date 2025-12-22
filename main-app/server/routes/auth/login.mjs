@@ -26,6 +26,21 @@ export default async function loginRoute(fastify) {
                 });
             }
 
+
+            let { data: profiles, error: profilesError } = await supabase
+                .from('profiles')
+                .select('ispro')
+                .eq('id', data.user.id)
+                .single();
+
+            if (profilesError) {
+                request.log.error("Failed to fetch user profile", profilesError);
+                return reply.status(500).send({
+                    ok: false,
+                    error: "Failed to fetch user profile",
+                });
+            }
+
             const { access_token, refresh_token } = data.session;
 
             reply
@@ -48,7 +63,8 @@ export default async function loginRoute(fastify) {
                     user: {
                         id: data.user.id,
                         email: data.user.email,
-                    }
+                    },
+                    hasActivePlan: profiles.ispro,
                 });
         } catch (err) {
             request.log.error({ err }, "Internal server error");

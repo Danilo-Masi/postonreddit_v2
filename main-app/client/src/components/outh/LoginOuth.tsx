@@ -25,6 +25,7 @@ export default function LoginOuth() {
 
     const handleLogin = async () => {
         setError("");
+        setLoading(true);
 
         // Validazione
         const validation = loginSchema.safeParse({ email, password });
@@ -33,18 +34,24 @@ export default function LoginOuth() {
             return;
         }
 
-        setLoading(true);
         try {
             const result = await loginFunction(email, password);
             if (!result.ok) {
-                setError(result.error || "Login failed");
+                console.error("Login failed: ", result.error);
+                setError("Login failed. Try again later");
                 return;
             }
 
-            login(result.user);
-            navigate("/", { replace: true });
+            login(result.user, result.hasActivePlan);
+
+            if (result.hasActivePlan) {
+                navigate("/", { replace: true });
+            } else {
+                navigate("/plans", { replace: true });
+            }
+
         } catch (err: any) {
-            console.error(err);
+            console.error("Something went wrong: ", err.message);
             setError("Something went wrong");
         } finally {
             setLoading(false);

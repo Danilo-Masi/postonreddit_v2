@@ -29,7 +29,7 @@ export default function App() {
         element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route
         path="/plans"
-        element={<ProtectedRoute><Plans /></ProtectedRoute>} />
+        element={<Plans />} />
     </Routes>
   )
 }

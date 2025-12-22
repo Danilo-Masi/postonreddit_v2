@@ -3,7 +3,7 @@ import { supabase } from "../../config/supabase.mjs";
 export default async function registrationRoute(fastify) {
 
     fastify.post("/register", async (request, reply) => {
-        const { name, email, password, plan } = request.body;
+        const { name, email, password } = request.body;
         if (!name || !email || !password) {
             request.log.error("Missing name, email or password");
             return reply.status(400).send({
@@ -27,15 +27,6 @@ export default async function registrationRoute(fastify) {
                     ok: false,
                     error: "Invalid credentials",
                 });
-            }
-
-            let product_id;
-            if (plan === "monthly") {
-                product_id = process.env.MONTLY_TEST_PRODUCT_ID;
-            } else if (plan === "lifetime") {
-                product_id = process.env.LIFETIME_TEST_PRODUCT_ID;
-            } else {
-                product_id = null;
             }
 
             const { access_token, refresh_token } = data.session;
@@ -62,7 +53,6 @@ export default async function registrationRoute(fastify) {
                         name: data.user.user_metadata.name,
                         email: data.user.email,
                     },
-                    product_id: product_id,
                 });
 
         } catch (err) {

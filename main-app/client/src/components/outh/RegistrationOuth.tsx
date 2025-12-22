@@ -2,7 +2,7 @@ import { CircleUser } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
@@ -11,12 +11,13 @@ import { Spinner } from "../ui/spinner";
 import { checkoutSession } from "@/api/billing/checkout-session";
 
 export default function RegistrationOuth({ plan }: { plan: string | null }) {
+    const navigate = useNavigate();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { registration } = useAuth();
+    const { login } = useAuth();
 
     const registerSchema = z.object({
         name: z.string().min(2, "Name must be at least 2 characters long"),
@@ -26,41 +27,53 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
 
     const handleRegister = async () => {
         setError("");
+        setLoading(true);
 
         // Validazione
         const validation = registerSchema.safeParse({ name, email, password });
         if (!validation.success) {
             setError(validation.error.message[0]);
+            setLoading(false);
             return;
         }
-
-        if (!plan || !["monthly", "lifetime"].includes(plan)) {
-            setError("Please select a valid plan");
-            return;
-        }
-
-        setLoading(true);
 
         try {
-            // 1-️Registrazione utente // TODO Togliere plan e trasferirelo nel checkout
-            const result = await registrationFunction(name, email, password, plan);
+            // 1-️Registrazione utente
+            const result = await registrationFunction(name, email, password);
+
             if (!result.ok) {
-                setError(result.error || "Registration failed");
+                console.error("Registration error:", result.error);
+                setError("Registration failed");
+                setLoading(false);
                 return;
             }
 
-            if (!result.user || !result.product_id) {
-                setError("User or product data missing");
+            if (!result.user) {
+                console.error("User data missing: ", result.error);
+                setError("User data missing");
                 return;
             }
 
             // 2-Salvataggio utente in context
-            registration(result.user);
+            login(result.user, false);
 
-            // 3-Creazione checkout session
-            const checkout = await checkoutSession(email, result.product_id);
+            // 3-Se non c'è un piano scelto, reindirizzo a /plans
+            if (!plan || !["monthly", "lifetime"].includes(plan)) {
+                alert("Registration successful!"); // Temporany Alert TODO
+                navigate("/plans", { replace: true });
+                return;
+            }
+
+            // 4-Creazione checkout session
+            const checkout = await checkoutSession({
+                userId: result.user.id,
+                email: result.user.email,
+                plan
+            });
+
             if (!checkout.ok || !checkout.checkoutUrl) {
-                setError(checkout.error || "Failed to create checkout session");
+                console.error("Failed to create checkout sessione: ", checkout.error);
+                navigate("/plans", { replace: true });
                 return;
             }
 
@@ -69,7 +82,7 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
 
         } catch (err: any) {
             console.error(err);
-            setError("Something went wrong");
+            setError("Something went wrong. Try again in a minute");
         } finally {
             setLoading(false);
         }

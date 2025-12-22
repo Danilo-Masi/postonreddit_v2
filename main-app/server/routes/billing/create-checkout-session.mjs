@@ -3,18 +3,25 @@ import { createCreem } from "creem_io";
 export default async function checkoutSessionRoute(fastify) {
 
     fastify.post("/create-checkout-session", async (request, reply) => {
-        const { email, product_id } = request.body;
-        if (!email || !product_id) {
-            request.log.error("Missing email or product_id");
+        const { userId, email, plan } = request.body;
+        if (!userId || !email || !plan) {
+            request.log.error("Missing userId, email, or plan");
             return reply.status(400).send({
                 ok: false,
-                error: "Missing email or product_id",
+                error: "Missing userId, email, or plan",
             });
         }
 
         try {
-            console.log("ENV KEY:", process.env.CREEM_TEST_API_KEY);
-            console.log("Product ID:", product_id);
+            let product_id;
+            if (plan === "monthly") {
+                product_id = process.env.MONTHLY_TEST_PRODUCT_ID;
+            } else {
+                product_id = process.env.LIFETIME_TEST_PRODUCT_ID;
+            }
+
+            console.log("ENV KEY:", process.env.CREEM_TEST_API_KEY); // Debug Log
+            console.log("PRODUCT ID:", product_id); // Debug Log
 
             const creem = createCreem({
                 apiKey: process.env.CREEM_TEST_API_KEY,
@@ -29,7 +36,7 @@ export default async function checkoutSessionRoute(fastify) {
                 // metadata to be setup later
             });
 
-            console.error(checkout.checkoutUrl); // Debug log
+            console.log("LINK REDIRECT: ", checkout.checkoutUrl); // Debug log
 
             return reply.send({
                 ok: true,

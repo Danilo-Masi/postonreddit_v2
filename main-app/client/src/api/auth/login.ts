@@ -10,13 +10,22 @@ export async function loginFunction(email: string, password: string) {
         const data = await res.json();
 
         if (!res.ok) {
-            return { ok: false, error: data.error || "Login failed" };
+            return {
+                ok: false,
+                error: data.error,
+            };
         }
 
-        return data;
+        return {
+            ok: true,
+            user: data.user,
+            hasActivePlan: data.hasActivePlan,
+        };
 
     } catch (error: any) {
-        console.error("Network error: ", error);
-        return { ok: false, error: "Network error" };
+        return {
+            ok: false,
+            error: error.message,
+        };
     }
 }
