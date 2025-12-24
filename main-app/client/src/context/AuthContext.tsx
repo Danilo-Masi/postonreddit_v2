@@ -1,108 +1,78 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { meFunction } from "@/api/user/me";
 
-type User = {
-    id: string;
-    email: string;
-    ispro: boolean; // indica se l'utente ha un piano attivo
-};
-
-type AuthStatus = "loading" | "unauthenticated" | "authenticated";
-type BillingStatus = "unknown" | "active" | "inactive";
-
 type AuthContextType = {
-    user: User | null;
-    authStatus: AuthStatus;
-    billingStatus: BillingStatus;
+    logged: boolean;
+    paying: boolean;
     loading: boolean;
-
-    login: (userData: User, hasActivePlan: boolean) => void;
-    activateUser: (userData: User) => void;
+    setPending: () => void;
+    setActive: () => void;
     logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
-    user: null,
-    authStatus: "unauthenticated",
-    billingStatus: "unknown",
+    logged: false,
+    paying: false,
     loading: true,
-
-    login: () => { },
-    activateUser: () => { },
+    setPending: () => { },
+    setActive: () => { },
     logout: () => { },
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
-    const [billingStatus, setBillingStatus] = useState<BillingStatus>("unknown");
+    const [logged, setLogged] = useState(false);
+    const [paying, setPaying] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // Fetch utente al mount
     useEffect(() => {
         let mounted = true;
 
-        async function fetchUser() {
-            try {
-                const data = await meFunction();
-                if (!mounted) return;
+        async function fetchMe() {
+            const data = await meFunction();
+            if (!mounted) return;
 
-                if (!data?.user) {
-                    setUser(null);
-                    setAuthStatus("unauthenticated");
-                    setBillingStatus("inactive");
-                } else {
-                    setUser(data.user);
-                    setAuthStatus("authenticated");
-                    setBillingStatus(data.user.ispro ? "active" : "inactive");
-                }
-            } catch (error) {
-                console.error("Auth fetch error:", error);
-                setUser(null);
-                setAuthStatus("unauthenticated");
-                setBillingStatus("inactive");
-            } finally {
-                setLoading(false);
+            if (!data) {
+                setLogged(false);
+                setPaying(false);
+            } else {
+                setLogged(data.logged);
+                setPaying(data.paying);
             }
+
+            setLoading(false);
         }
 
-        fetchUser();
-
+        fetchMe();
         return () => { mounted = false; };
     }, []);
 
-    // login dopo login o registrazione
-    const login = (userData: User, hasActivePlan: boolean) => {
-        setUser(userData);
-        setAuthStatus("authenticated");
-        setBillingStatus(hasActivePlan ? "active" : "inactive");
+    // Usato dopo login / registration
+    const setPending = () => {
+        setLogged(true);
+        setPaying(false);
     };
 
-    // attivazione utente dopo pagamento
-    const activateUser = (userData: User) => {
-        setUser(userData);
-        setAuthStatus("authenticated");
-        setBillingStatus("active");
+    // Usato dopo webhook Stripe / ritorno dal checkout
+    const setActive = () => {
+        setLogged(true);
+        setPaying(true);
     };
 
     const logout = () => {
-        setUser(null);
-        setAuthStatus("unauthenticated");
-        setBillingStatus("inactive");
+        setLogged(false);
+        setPaying(false);
     };
 
     return (
         <AuthContext.Provider
             value={{
-                user,
-                authStatus,
-                billingStatus,
+                logged,
+                paying,
                 loading,
-                login,
-                activateUser,
+                setPending,
+                setActive,
                 logout,
-            }}
-        >
+            }}>
             {children}
         </AuthContext.Provider>
     );

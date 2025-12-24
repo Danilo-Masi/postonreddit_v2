@@ -4,20 +4,30 @@ export async function meFunction() {
             credentials: "include",
         });
 
-        // User is not authenticated
         if (res.status === 401) {
-            return null;
+            return {
+                logged: false,
+                paying: false,
+            };
         }
 
-        // Unexpected error
         if (!res.ok) {
-            console.error("meFunction error:", res.status);
-            return null;
+            console.error("Error in meFunction: ", res.status);
+            return {
+                logged: false,
+                paying: false,
+            };
         }
 
-        return await res.json();
+        const data = await res.json();
+
+        return data;
+
     } catch (err) {
         console.error("meFunction network error:", err);
-        return null;
+        return {
+            logged: false,
+            paying: false,
+        }
     }
 }

@@ -15,7 +15,7 @@ export default function LoginOuth() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { setPending, setActive } = useAuth();
     const emailRef = useRef<HTMLInputElement>(null);
 
     const loginSchema = z.object({
@@ -31,20 +31,23 @@ export default function LoginOuth() {
         const validation = loginSchema.safeParse({ email, password });
         if (!validation.success) {
             setError(validation.error.message[0]);
+            setLoading(false);
             return;
         }
 
         try {
             const result = await loginFunction(email, password);
+
             if (!result.ok) {
                 console.error("Login failed: ", result.error);
                 setError("Login failed. Try again later");
                 return;
             }
 
-            login(result.user, result.hasActivePlan);
+            setPending();
 
             if (result.hasActivePlan) {
+                setActive();
                 navigate("/", { replace: true });
             } else {
                 navigate("/plans", { replace: true });

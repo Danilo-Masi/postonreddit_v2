@@ -4,10 +4,10 @@ import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
-    const { authStatus, billingStatus, loading } = useAuth();
+    const { logged, paying, loading } = useAuth();
 
-    // 1. Attendo caricamento
-    if (loading || authStatus === "loading") {
+    // In stato di caricamento
+    if (loading) {
         return (
             <div className="w-full h-svh flex items-center justify-center bg-zinc-800 text-zinc-200 text-xl">
                 <Spinner />
@@ -15,16 +15,16 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
         );
     }
 
-    // 2. Non autenticato
-    if (authStatus === "unauthenticated") {
+    // Non autenticato
+    if (!logged) {
         return <Navigate to="/login" replace />;
     }
 
-    // 3. Autenticato ma senza piano
-    if (billingStatus !== "active") {
+    // Autenticato ma senza piano attivo
+    if (logged && !paying) {
         return <Navigate to="/plans" replace />;
     }
 
     // 4. Autenticato con piano attivo
-    return <>{children}</>;
+    return children;
 }

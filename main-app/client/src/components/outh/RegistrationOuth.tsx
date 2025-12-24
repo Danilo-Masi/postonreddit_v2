@@ -17,7 +17,7 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { setPending } = useAuth();
 
     const registerSchema = z.object({
         name: z.string().min(2, "Name must be at least 2 characters long"),
@@ -55,7 +55,9 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
             }
 
             // 2-Salvataggio utente in context
-            login(result.user, false);
+            setPending();
+
+            console.log("REGISTER DEBUG: ", plan);
 
             // 3-Se non c'è un piano scelto, reindirizzo a /plans
             if (!plan || !["monthly", "lifetime"].includes(plan)) {
