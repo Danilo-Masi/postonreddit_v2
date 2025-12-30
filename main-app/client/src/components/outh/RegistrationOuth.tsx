@@ -57,8 +57,6 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
             // 2-Salvataggio utente in context
             setPending();
 
-            console.log("REGISTER DEBUG: ", plan);
-
             // 3-Se non c'è un piano scelto, reindirizzo a /plans
             if (!plan || !["monthly", "lifetime"].includes(plan)) {
                 alert("Registration successful!"); // Temporany Alert TODO
@@ -67,11 +65,7 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
             }
 
             // 4-Creazione checkout session
-            const checkout = await checkoutSession({
-                userId: result.user.id,
-                email: result.user.email,
-                plan
-            });
+            const checkout = await checkoutSession(plan);
 
             if (!checkout.ok || !checkout.checkoutUrl) {
                 console.error("Failed to create checkout sessione: ", checkout.error);

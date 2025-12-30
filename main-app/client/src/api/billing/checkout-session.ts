@@ -1,17 +1,11 @@
-type CheckoutPayload = {
-    userId: string;
-    email: string;
-    plan: string | null;
-}
-
-export async function checkoutSession(payload: CheckoutPayload) {
+export async function checkoutSession(plan: string | null) {
     try {
         const res = await fetch(
             "http://127.0.0.1:3000/billing/create-checkout-session",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(plan),
             }
         );
 
