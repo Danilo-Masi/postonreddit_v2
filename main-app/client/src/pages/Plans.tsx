@@ -1,4 +1,3 @@
-import PlanTitle from "@/components/plans/PlanTitle";
 import PlansGroup from "@/components/plans/PlansGroup";
 import { useNavigate } from "react-router-dom";
 import { checkoutSession } from "@/api/billing/checkout-session";
@@ -19,8 +18,7 @@ export default function Plans() {
     }
 
     return (
-        <div className="w-full h-auto md:h-svh overflow-scroll flex flex-col items-center justify-center gap-5 p-5 bg-zinc-800">
-            <PlanTitle />
+        <div className="w-full h-auto min-h-svh overflow-scroll flex items-center justify-center p-5 bg-zinc-800">
             <PlansGroup />
         </div>
     )
