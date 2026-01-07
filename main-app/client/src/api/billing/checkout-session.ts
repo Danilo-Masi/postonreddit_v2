@@ -1,4 +1,4 @@
-export async function checkoutSession(plan: string | null) {
+export async function checkoutSession(plan: string) {
     try {
         const res = await fetch(
             "http://127.0.0.1:3000/billing/create-checkout-session",
