@@ -12,12 +12,13 @@ export default function Plans() {
         setLoading(true);
 
         try {
-            console.log("PLAN: " + selectedPlan);
+            console.log("PLAN: " + selectedPlan); // DEBUG LOG
             const checkout = await checkoutSession(selectedPlan);
 
             if (!checkout.ok || !checkout.checkoutUrl) {
                 console.error("Failed to create checkout sessione: ", checkout.error);
                 navigate("/login", { replace: true });
+                setLoading(false);
                 return;
             }
             setLoading(false);
@@ -32,7 +33,7 @@ export default function Plans() {
     }
 
     return (
-        <div className="w-full h-auto min-h-svh overflow-scroll flex items-center justify-center p-5 bg-zinc-800">
+        <div className="w-full h-auto min-h-svh overflow-scroll flex items-center justify-center p-5 bg-zinc-900">
             <PlansGroup
                 isLoading={isLoading}
                 selectedPlan={selectedPlan}
