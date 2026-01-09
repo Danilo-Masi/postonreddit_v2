@@ -10,11 +10,8 @@ export default function Plans() {
 
     const handleCheckout = async () => {
         setLoading(true);
-
         try {
-            console.log("PLAN: " + selectedPlan); // DEBUG LOG
             const checkout = await checkoutSession(selectedPlan);
-
             if (!checkout.ok || !checkout.checkoutUrl) {
                 console.error("Failed to create checkout sessione: ", checkout.error);
                 navigate("/login", { replace: true });

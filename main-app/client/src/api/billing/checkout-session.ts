@@ -4,8 +4,9 @@ export async function checkoutSession(plan: string) {
             "http://127.0.0.1:3000/billing/create-checkout-session",
             {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(plan),
+                body: JSON.stringify({ plan }),
             }
         );
 

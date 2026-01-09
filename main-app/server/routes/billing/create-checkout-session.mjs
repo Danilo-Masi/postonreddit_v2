@@ -6,8 +6,6 @@ export default async function checkoutSessionRoute(fastify) {
     fastify.post("/create-checkout-session", async (request, reply) => {
         const access_token = request.cookies.access_token;
 
-        console.log("ACCESS TOKEN: ", access_token); // DEBIG LOG
-
         if (!access_token) {
             return reply.status(401).send({
                 ok: false,
@@ -48,9 +46,10 @@ export default async function checkoutSessionRoute(fastify) {
             const checkout = await creem.checkouts.create({
                 productId: product_id,
                 customer: { email: email },
-                successUrl: "http://www.postonreddit.com", // TO BE UPDATE
+                successUrl: "https://www.postonreddit.com", // TO BE UPDATE
                 metadata: {
                     userId: userId,
+                    plan: plan,
                 }
             });
 
