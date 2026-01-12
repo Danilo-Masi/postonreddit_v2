@@ -24,20 +24,18 @@ export default async function webhookRoutes(fastify) {
         );
     }
 
-    fastify.post("/webhook", async (req, res) => {
-
-        console.log("ARRIVATO AL WEBHOOK") // DEBUG LOG
-
+    fastify.post("/webhook", async (request, reply) => {
         try {
-            const signature = req.headers["creem-signature"];
-            const rawBody = req.body;
+            const signature = request.headers["creem-signature"];
+
+            const rawBody = request.body;
 
             if (!signature) {
-                return res.status(400).send("Missing signature");
+                return reply.status(400).send("Missing signature");
             }
 
             if (!rawBody || !Buffer.isBuffer(rawBody)) {
-                return res.status(400).send("Missing raw body");
+                return reply.status(400).send("Missing raw body");
             }
 
             const isValid = verifySignature(
@@ -47,10 +45,10 @@ export default async function webhookRoutes(fastify) {
             );
 
             if (!isValid) {
-                return res.status(400).send("Invalid signature");
+                return reply.status(400).send("Invalid signature");
             }
 
-            const event = JSON.parse(rawBody.toString("utf-8"));
+            const event = rawBody;
 
             await creem.webhooks.handleEvents(event, signature, {
 
@@ -59,18 +57,39 @@ export default async function webhookRoutes(fastify) {
                 },
 
                 onGrantAccess: async (context) => {
-                    console.log("ACCESSO CONSENTITO", data.metadata?.userId); // DEBUG LOG
+                    console.log("ACCESSO CONSENTITO"); // DEBUG LOG
+                    const userId = context.metadata?.userId;
+                    const plan = context.metadata?.plan;
+                    console.log("PLAN:", plan); // DEBUG LOG    
+                    console.log("USER ID:", userId); // DEBUG LOG   
+                    try {
+                        const { error } = await supabase
+                            .from('users')
+                            .update({
+                                is_pro: true,
+                                pro_type: plan.toLowerCase(),
+                            })
+                            .eq('id', userId);
+
+                        if (error) {
+                            request.log.error("Error handling the DB Update", error);
+                            return reply.status(500).send("Internal Server Error");
+                        }
+                    } catch (error) {
+                        request.log.error("Error handling the Grant Access", error);
+                        return reply.status(500).send("Internal Server Error");
+                    }
                 },
 
                 onRevokeAccess: async (context) => {
-                    console.log("⛔ ACCESSO REVOCATO", context.metadata?.userId); // DEBUG LOG
+                    console.log("ACCESSO REVOCATO", context.metadata?.userId); // DEBUG LOG
                 },
             });
 
-            res.status(200).send("OK");
+            return reply.status(200).send("OK");
         } catch (error) {
-            console.error("Webhook error:", error); // DEBUG LOG
-            res.status(400).send("Webhook error");
+            request.log.error("Error handling webhook:", error);
+            return reply.status(400).send("Webhook error");
         }
     });
 }

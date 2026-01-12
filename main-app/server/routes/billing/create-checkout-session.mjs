@@ -46,7 +46,8 @@ export default async function checkoutSessionRoute(fastify) {
             const checkout = await creem.checkouts.create({
                 productId: product_id,
                 customer: { email: email },
-                successUrl: "https://www.postonreddit.com", // TO BE UPDATE
+                successUrl: "https://github.com/Danilo-Masi", // TO BE UPDATE
+                cancelUrl: "https://www.google.com",  // TO BE UPDATE
                 metadata: {
                     userId: userId,
                     plan: plan,
