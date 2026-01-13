@@ -54,6 +54,8 @@ export default async function checkoutSessionRoute(fastify) {
                 }
             });
 
+            console.log("CHECKOUT CREATED"); // DEBUG LOG
+
             return reply.send({
                 ok: true,
                 checkoutUrl: checkout.checkoutUrl,

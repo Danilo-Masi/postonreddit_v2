@@ -24,18 +24,40 @@ export default async function webhookRoutes(fastify) {
         );
     }
 
+    async function grantUserAccess({ userId, plan }) {
+        try {
+            if (!userId || !plan) {
+                throw new Error("Missing userId or plan");
+            }
+
+            const { error } = await supabase
+                .from("profiles")
+                .update({
+                    ispro: true,
+                    pro_since: new Date(),
+                    pro_type: plan.toLowerCase(),
+                    pro_expiration: plan === "lifetime" ? null : new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000),
+                })
+                .eq("id", userId)
+                .select();
+
+            if (error) {
+                throw new Error(`DB update failed: ${error.message} (code: ${error.code})`);
+            }
+
+        } catch (error) {
+            console.error("grantUserAccess error:", error);
+            throw error;
+        }
+    }
+
     fastify.post("/webhook", async (request, reply) => {
         try {
             const signature = request.headers["creem-signature"];
-
             const rawBody = request.body;
 
-            if (!signature) {
-                return reply.status(400).send("Missing signature");
-            }
-
-            if (!rawBody || !Buffer.isBuffer(rawBody)) {
-                return reply.status(400).send("Missing raw body");
+            if (!signature || !rawBody || !Buffer.isBuffer(rawBody)) {
+                return reply.status(400).send("Invalid webhook payload");
             }
 
             const isValid = verifySignature(
@@ -48,47 +70,47 @@ export default async function webhookRoutes(fastify) {
                 return reply.status(400).send("Invalid signature");
             }
 
-            const event = rawBody;
-
-            await creem.webhooks.handleEvents(event, signature, {
+            await creem.webhooks.handleEvents(rawBody, signature, {
 
                 onCheckoutCompleted: async (data) => {
-                    console.log("CHECKOUT COMPLETATO:", data.customer?.email); // DEBUG LOG
+                    const userId = data.metadata?.userId;
+                    const plan = data.metadata?.plan;
+
+                    if (plan !== "lifetime") return;
+
+                    try {
+                        await grantUserAccess({ userId, plan });
+                        console.log("LIFETIME ACCESS GRANTED"); // DEBUG LOG
+                    } catch (error) {
+                        request.log.error("lifetime grant failed: ", error.message);
+                    }
                 },
 
                 onGrantAccess: async (context) => {
-                    console.log("ACCESSO CONSENTITO"); // DEBUG LOG
                     const userId = context.metadata?.userId;
                     const plan = context.metadata?.plan;
-                    console.log("PLAN:", plan); // DEBUG LOG    
-                    console.log("USER ID:", userId); // DEBUG LOG   
-                    try {
-                        const { error } = await supabase
-                            .from('users')
-                            .update({
-                                is_pro: true,
-                                pro_type: plan.toLowerCase(),
-                            })
-                            .eq('id', userId);
 
-                        if (error) {
-                            request.log.error("Error handling the DB Update", error);
-                            return reply.status(500).send("Internal Server Error");
-                        }
+                    if (!userId || !plan) {
+                        request.log.error("Missing metadata: ", context.metadata);
+                        return;
+                    }
+
+                    try {
+                        await grantUserAccess({ userId, plan });
+                        console.log("SUBSCRIPTION ACCESS GRANTED"); // DEBUG LOG
                     } catch (error) {
-                        request.log.error("Error handling the Grant Access", error);
-                        return reply.status(500).send("Internal Server Error");
+                        request.log.error("Subscription grant failed: ", error.message);
                     }
                 },
 
                 onRevokeAccess: async (context) => {
-                    console.log("ACCESSO REVOCATO", context.metadata?.userId); // DEBUG LOG
+                    console.log("ACCESS REVOKED", context.metadata?.userId); // DEBUG LOG
                 },
             });
 
             return reply.status(200).send("OK");
         } catch (error) {
-            request.log.error("Error handling webhook:", error);
+            request.log.error("Webhook fatal error: ", error);
             return reply.status(400).send("Webhook error");
         }
     });
