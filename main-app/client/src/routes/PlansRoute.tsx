@@ -3,16 +3,16 @@ import { useAuth } from "@/context/AuthContext";
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({ children }: { children: ReactNode }) {
+export default function PlansRoute({ children }: { children: ReactNode }) {
     const { logged, paying, loading } = useAuth();
 
     // In stato di caricamento
     if (loading) {
         return (
-            <div className="w-full h-svh flex items-center justify-center bg-zinc-900 text-zinc-200 text-xl">
+            <div className="w-full h-svh flex items-center justify-center bg-zinc-900 text-zinc-100 text-xl">
                 <Spinner />
             </div>
-        );
+        )
     }
 
     // Utente non autenticato
@@ -20,11 +20,11 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
         return <Navigate to="/login" replace />;
     }
 
-    // Utente autenticato ma senza piano attivo
-    if (logged && !paying) {
-        return <Navigate to="/plans" replace />;
+    // Utente autenticato ma con piano già attivo
+    if (logged && paying) {
+        return <Navigate to="/" replace />;
     }
 
-    // Utente autenticato con piano attivo
+    // Utente autenticato senza piano attivo
     return children;
 }

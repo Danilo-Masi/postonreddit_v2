@@ -15,11 +15,16 @@ export default function PublicRoute({ children }: { children: ReactNode }) {
         );
     }
 
-    // Autenticato e con piano attivo
+    // Utente autenticato e con piano attivo
     if (logged && paying) {
         return <Navigate to="/" replace />;
     }
 
-    // Non autenticato
+    // Utente autenticato ma senza piano attivo
+    if (logged && !paying) {
+        return <Navigate to="/plans" replace />;
+    }
+
+    // Utente non autenticato
     return children
 }
