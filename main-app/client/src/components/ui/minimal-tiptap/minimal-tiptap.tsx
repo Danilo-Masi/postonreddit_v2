@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { SectionOne } from "./components/section/one"
 import { SectionTwo } from "./components/section/two"
-import { SectionThree } from "./components/section/three"
 import { SectionFour } from "./components/section/four"
 import { SectionFive } from "./components/section/five"
 import { LinkBubbleMenu } from "./components/bubble-menu/link-bubble-menu"
@@ -15,10 +14,7 @@ import { useMinimalTiptapEditor } from "./hooks/use-minimal-tiptap"
 import { MeasuredContainer } from "./components/measured-container"
 import { useTiptapEditor } from "./hooks/use-tiptap-editor"
 
-export interface MinimalTiptapProps extends Omit<
-  UseMinimalTiptapEditorProps,
-  "onUpdate"
-> {
+export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, "onUpdate"> {
   value?: Content
   onChange?: (value: Content) => void
   className?: string
@@ -47,15 +43,10 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
 
       <Separator orientation="vertical" className="mx-2" />
 
-      <SectionThree editor={editor} />
-
-      <Separator orientation="vertical" className="mx-2" />
-
       <SectionFour
         editor={editor}
         activeActions={["orderedList", "bulletList"]}
-        mainActionCount={0}
-      />
+        mainActionCount={0} />
 
       <Separator orientation="vertical" className="mx-2" />
 
