@@ -12,7 +12,6 @@ export default function EditorContainer() {
       {isMobile && <ProgressBar />}
       <TitleEditor />
       <ContentEditor />
-
       {isMobile && <ButtonNextSection />}
     </div>
   )

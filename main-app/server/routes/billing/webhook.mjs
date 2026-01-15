@@ -24,6 +24,7 @@ export default async function webhookRoutes(fastify) {
         );
     }
 
+    // Function to grant user access
     async function grantUserAccess({ userId, plan }) {
         try {
             if (!userId || !plan) {
@@ -46,7 +47,35 @@ export default async function webhookRoutes(fastify) {
             }
 
         } catch (error) {
-            console.error("grantUserAccess error:", error);
+            console.error("grantUserAccess error: ", error);
+            throw error;
+        }
+    }
+
+    // Function to revoke user access
+    async function revokeUserAccess({ userId }) {
+        try {
+            if (!userId) {
+                throw new Error("Missing userId");
+            }
+
+            const { error } = await supabase
+                .from("profiles")
+                .update({
+                    ispro: false,
+                    pro_since: null,
+                    pro_type: null,
+                    pro_expiration: null,
+                })
+                .eq("id", userId)
+                .select();
+
+            if (error) {
+                throw new Error(`DB update failed: ${error.message} (code: ${error.code})`);
+            }
+
+        } catch (error) {
+            console.error("revokeUserAccess error: ", error);
             throw error;
         }
     }
@@ -73,6 +102,7 @@ export default async function webhookRoutes(fastify) {
             await creem.webhooks.handleEvents(rawBody, signature, {
 
                 onCheckoutCompleted: async (data) => {
+                    request.log.info("Checkout completed event received");
                     const userId = data.metadata?.userId;
                     const plan = data.metadata?.plan;
 
@@ -87,14 +117,13 @@ export default async function webhookRoutes(fastify) {
                 },
 
                 onGrantAccess: async (context) => {
+                    request.log.info("Grant access event received");
                     const userId = context.metadata?.userId;
                     const plan = context.metadata?.plan;
-
                     if (!userId || !plan) {
                         request.log.error("Missing metadata: ", context.metadata);
                         return;
                     }
-
                     try {
                         await grantUserAccess({ userId, plan });
                         console.log("SUBSCRIPTION ACCESS GRANTED"); // DEBUG LOG
@@ -104,8 +133,50 @@ export default async function webhookRoutes(fastify) {
                 },
 
                 onRevokeAccess: async (context) => {
-                    console.log("ACCESS REVOKED", context.metadata?.userId); // DEBUG LOG
+                    request.log.info("Revoke access event received");
+                    const userId = context.metadata?.userId;
+                    if (!userId) {
+                        request.log.error("Missing userId in metadata: ", context.metadata);
+                        return;
+                    }
+                    try {
+                        await revokeUserAccess({ userId });
+                        console.log("ACCESS REVOKED"); // DEBUG LOG
+                    } catch (error) {
+                        request.log.error("Revoke access failed: ", error.message);
+                    }
                 },
+
+                onSubscriptionExpired: async (context) => {
+                    request.log.info("Subscription expired event received");
+                    // TODO: Inviare una notifica tramite email all'utente 
+                },
+
+                onSubscriptionCanceled: async (context) => {
+                    request.log.info("Subscription canceled event received");
+                    const userId = context.metadata?.userId;
+                    if (!userId) {
+                        request.log.error("Missing userId in metadata: ", context.metadata);
+                        return;
+                    }
+                    try {
+                        await revokeUserAccess({ userId });
+                        console.log("SUBSCRIPTION CANCELED"); // DEBUG LOG
+                    } catch (error) {
+                        request.log.error("Revoke access failed: ", error.message);
+                    }
+                },
+
+                onRefundCreated: async (context) => {
+                    request.log.info("Refund created event received");
+                    // TODO: Inviare una notifica tramite email a me stesso + annullare l'accesso dell'utente
+                },
+
+                onDisputeCreated: async (context) => {
+                    request.log.info("Dispute created event received");
+                    // TODO: Inviare una notifica tramite email a me stesso + annullare l'accesso dell'utente
+                }
+
             });
 
             return reply.status(200).send("OK");

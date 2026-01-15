@@ -19,15 +19,30 @@ export default function App() {
       <Route
         path="/plans"
         element={<GuardedRoute access="plans"><Plans /></GuardedRoute>} />
+
+      <Route
+        path="/"
+        element={<Dashboard />} />
+      <Route
+        path="/settings"
+        element={<Settings />} />
+      <Route
+        path="/scheduled"
+        element={<Scheduled />} />
+      {/* TODO: Enable pro access for dashboard after testing
       <Route
         path="/"
         element={<GuardedRoute access="pro"><Dashboard /></GuardedRoute>} />
+      <Route
+        path="/"
+        element={<Dashboard />} />
       <Route
         path="/scheduled"
         element={<GuardedRoute access="pro"><Scheduled /></GuardedRoute>} />
       <Route
         path="/settings"
         element={<GuardedRoute access="pro"><Settings /></GuardedRoute>} />
+        */}
     </Routes>
   )
 }
