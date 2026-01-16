@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { logoutFunction } from "@/api/auth/logout";
+import { redditAuthorize } from "@/api/reddit/reddit-authorize";
 
 function SettingsCard({ title, description, children }: { title: string, description: string, children: React.ReactNode }) {
     return (
@@ -72,6 +73,16 @@ export default function AppSettings() {
         navigate("/login");
     }
 
+    const handleRedditAuthorize = async () => {
+        const res = await redditAuthorize();
+        if (!res.ok) {
+            console.log("Reddit authorization failed: ", res.error);
+            alert("Reddit authorization failed");
+            return;
+        }
+        window.location.href = res.redditAuthUrl;
+    }
+
     return (
         <div className="w-full md:w-1/2 flex flex-col gap-6 text-zinc-100">
 
@@ -90,6 +101,7 @@ export default function AppSettings() {
                     title="Reddit authorization"
                     description="Required to publish posts on your behalf.">
                     <Button
+                        onClick={handleRedditAuthorize}
                         className="w-full md:w-auto md:min-w-1/3 cursor-pointer bg-orange-600 hover:bg-orange-600/80">
                         Grant permission
                     </Button>

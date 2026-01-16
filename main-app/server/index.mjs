@@ -8,6 +8,7 @@ import fastifyCookie from "@fastify/cookie";
 import authRoutes from "./routes/auth/auth.mjs";
 import userRoute from "./routes/user/user.mjs";
 import billingRoutes from "./routes/billing/billing.mjs";
+import redditRoute from "./routes/reddit/reddit.mjs";
 
 const fastify = Fastify({ logger: true });
 
@@ -25,6 +26,7 @@ fastify.register(fastifyCookie, {
 fastify.register(authRoutes, { prefix: "/auth" });
 fastify.register(userRoute, { prefix: "/user" });
 fastify.register(billingRoutes, { prefix: "/billing" });
+fastify.register(redditRoute, { prefix: "/reddit" });
 
 try {
     await fastify.listen({ port: 3000 });
