@@ -1,10 +1,14 @@
 import Layout from "../components/layout/Layout";
-import AppSettings from "@/components/settings/AppSettings";
+import SettingsContainer from "@/components/settings/SettingsContainer";
+import LogoutDialog from "@/components/settings/LogoutDialog";
+import CancelAccountDialog from "@/components/settings/CancelAccountDialog";
 
 export default function Settings() {
     return (
         <Layout>
-            <AppSettings />
+            <SettingsContainer />
+            <LogoutDialog />
+            <CancelAccountDialog />
         </Layout>
     );
 }

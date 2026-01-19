@@ -1,3 +1,5 @@
+import { supabase } from "../../config/supabase.mjs";
+
 export default async function redditAuthorizeRoute(fastify, opts) {
 
     const REDDIT_CLIENT_ID = process.env.REDDIT_CLIENT_ID;
@@ -5,6 +7,7 @@ export default async function redditAuthorizeRoute(fastify, opts) {
     const SCOPES = ["identity", "read", "submit", "mysubreddits", "history"].join(" ");
 
     fastify.get("/authorize", async (request, reply) => {
+
         const access_token = request.cookies.access_token;
         if (!access_token) {
             return reply.status(401).send({
