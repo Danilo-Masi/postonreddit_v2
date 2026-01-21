@@ -1,6 +1,8 @@
-import { supabase } from "../../config/supabase.mjs";
+import { supabase, supabaseAdmin } from "../../config/supabase.mjs";
+import { creem } from "../../config/creem.mjs";
 
 export default async function cancelRoute(fastify) {
+
     fastify.post("/cancel-account", async (request, reply) => {
         try {
             const access_token = request.cookies.access_token;
@@ -25,18 +27,46 @@ export default async function cancelRoute(fastify) {
 
             const userId = data.user.id;
 
-            // TODO: Delete payment on creem
-
-            const { error } = await supabase
+            // 1-Recupera info abbonamento dal DB
+            let { data: profiles, error: profilesError } = await supabase
                 .from('profiles')
-                .delete()
-                .eq('id', userId);
+                .select('pro_subscription_id')
+                .eq('id', userId)
+                .single();
 
-            if (error) {
-                request.log.error("Error deleting profile: ", error);
+            if (profilesError) {
+                request.log.error({ profilesError }, "Error fetching user profile");
                 return reply.status(500).send({
                     ok: false,
-                    error: "Error during the deletion of the profile",
+                    error: "Error fetching user profile",
+                });
+            }
+
+            const subscriptionId = profiles?.pro_subscription_id;
+
+            // 2-Se c'è un abbonamento attivo, lo cancella
+            if (subscriptionId !== null) {
+                const { error } = await creem.subscriptions.cancel({
+                    subscriptionId: subscriptionId,
+                });
+
+                if (error) {
+                    request.log.error({ error }, "Error cancelling subscription");
+                    return reply.status(500).send({
+                        ok: false,
+                        error: "Error cancelling subscription",
+                    });
+                }
+            }
+
+            // 3-Cancella l'utente
+            const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+            if (error) {
+                request.log.error({ error }, "Error deleting user from database");
+                return reply.status(500).send({
+                    ok: false,
+                    error: "Error deleting user",
                 });
             }
 
@@ -63,4 +93,5 @@ export default async function cancelRoute(fastify) {
             });
         }
     });
+
 }

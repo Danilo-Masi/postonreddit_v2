@@ -1,5 +1,6 @@
-import SettingsApp from "./SettingsApp";
-import SettingsInfo from "./SettingsInfo";
+import SettingsApp from "./app-settings/SettingsApp";
+import SettingsInfo from "./info-settings/SettingsInfo";
+import SettingsPayment from "./payment-settings/SettingsPayment";
 
 export default function SettingsContainer() {
     return (
@@ -13,7 +14,7 @@ export default function SettingsContainer() {
             </div>
             {/* SETTINGS SECTIONS */}
             <SettingsApp />
-            {/* TODO:  <SettingsPayment />*/}
+            <SettingsPayment />
             <SettingsInfo />
         </div>
     );

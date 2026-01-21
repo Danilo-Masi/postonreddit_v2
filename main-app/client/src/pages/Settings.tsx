@@ -1,7 +1,8 @@
 import Layout from "../components/layout/Layout";
 import SettingsContainer from "@/components/settings/SettingsContainer";
-import LogoutDialog from "@/components/settings/LogoutDialog";
-import CancelAccountDialog from "@/components/settings/CancelAccountDialog";
+import CancelAccountDialog from "@/components/settings/app-settings/CancelAccountDialog";
+import LogoutDialog from "@/components/settings/app-settings/LogoutDialog";
+import CancelSubscriptionDialog from "@/components/settings/payment-settings/CancelSubscriptionDialog";
 
 export default function Settings() {
     return (
@@ -9,6 +10,7 @@ export default function Settings() {
             <SettingsContainer />
             <LogoutDialog />
             <CancelAccountDialog />
+            <CancelSubscriptionDialog />
         </Layout>
     );
 }

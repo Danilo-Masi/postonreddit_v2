@@ -4,7 +4,6 @@ export async function cancelAccountFunction() {
         credentials: "include",
     });
 
-
     const data = await res.json();
     return { ok: res.ok, error: data.error };
 }

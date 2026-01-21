@@ -1,8 +1,11 @@
 import { TicketCheck } from "lucide-react";
-import { Button } from "../ui/button";
-import { DangerRow, SettingRow, SettingsCard } from "./SettingsUtility";
+import { useAppContext } from "@/context/AppContext";
+import { Button } from "@/components/ui/button";
+import { DangerRow, SettingRow, SettingsCard } from "../SettingsUtility";
 
 export default function SettingsPayment() {
+    const { setCancelSubscriptionDialogOpen } = useAppContext();
+
     return (
         <SettingsCard title="Payment" description="Billing and subscription management.">
             {/* Invoices */}
@@ -19,7 +22,8 @@ export default function SettingsPayment() {
             <DangerRow
                 title="Cancel subscription"
                 description="Your subscription will remain active until the end of the billing period."
-                buttonLabel="Cancel subscription" />
+                buttonLabel="Cancel subscription"
+                onClick={() => setCancelSubscriptionDialogOpen(true)} />
         </SettingsCard>
     )
 }

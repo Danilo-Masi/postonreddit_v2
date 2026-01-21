@@ -30,6 +30,9 @@ type AppContextType = {
     setLogoutDialogOpen: Dispatch<SetStateAction<boolean>>;
     isCancelAccountDialogOpen: boolean;
     setCancelAccountDialogOpen: Dispatch<SetStateAction<boolean>>;
+    // Payment settings
+    isCancelSubscriptionDialogOpen: boolean;
+    setCancelSubscriptionDialogOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -46,6 +49,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     // App settings
     const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [isCancelAccountDialogOpen, setCancelAccountDialogOpen] = useState(false);
+    // Payment settings
+    const [isCancelSubscriptionDialogOpen, setCancelSubscriptionDialogOpen] = useState(false);
 
     return (
         <AppContext.Provider
@@ -69,6 +74,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setLogoutDialogOpen,
                 isCancelAccountDialogOpen,
                 setCancelAccountDialogOpen,
+                // Payment settings
+                isCancelSubscriptionDialogOpen,
+                setCancelSubscriptionDialogOpen,
             }}>
             {children}
         </AppContext.Provider>

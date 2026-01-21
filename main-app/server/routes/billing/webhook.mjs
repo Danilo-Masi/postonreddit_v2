@@ -25,10 +25,10 @@ export default async function webhookRoutes(fastify) {
     }
 
     // Function to grant user access
-    async function grantUserAccess({ userId, plan }) {
+    async function grantUserAccess({ userId, plan, subscriptionId }) {
         try {
             if (!userId || !plan) {
-                throw new Error("Missing userId or plan");
+                throw new Error("Missing userId, plan");
             }
 
             const { error } = await supabase
@@ -38,6 +38,7 @@ export default async function webhookRoutes(fastify) {
                     pro_since: new Date(),
                     pro_type: plan.toLowerCase(),
                     pro_expiration: plan === "lifetime" ? null : new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000),
+                    pro_subscription_id: subscriptionId ?? null,
                 })
                 .eq("id", userId)
                 .select();
@@ -66,6 +67,7 @@ export default async function webhookRoutes(fastify) {
                     pro_since: null,
                     pro_type: null,
                     pro_expiration: null,
+                    pro_subscription_id: null,
                 })
                 .eq("id", userId)
                 .select();
@@ -120,12 +122,14 @@ export default async function webhookRoutes(fastify) {
                     request.log.info("Grant access event received");
                     const userId = context.metadata?.userId;
                     const plan = context.metadata?.plan;
-                    if (!userId || !plan) {
-                        request.log.error("Missing metadata: ", context.metadata);
+                    console.log(context.id); // DEBUG LOG
+                    const subscriptionId = context.id;
+                    if (!userId || !plan || !subscriptionId) {
+                        request.log.error("Missing metadata: ", context);
                         return;
                     }
                     try {
-                        await grantUserAccess({ userId, plan });
+                        await grantUserAccess({ userId, plan, subscriptionId });
                         console.log("SUBSCRIPTION ACCESS GRANTED"); // DEBUG LOG
                     } catch (error) {
                         request.log.error("Subscription grant failed: ", error.message);
