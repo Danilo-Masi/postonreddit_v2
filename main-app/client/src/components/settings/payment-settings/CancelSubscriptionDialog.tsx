@@ -1,5 +1,6 @@
+import { cancelSubscriptionFunction } from "@/api/billing/cancel-subscription";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAppContext } from "@/context/AppContext";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CancelSubscriptionDialog() {
@@ -7,17 +8,15 @@ export default function CancelSubscriptionDialog() {
     const { isCancelSubscriptionDialogOpen, setCancelSubscriptionDialogOpen } = useAppContext();
 
     const handleCancelSubscription = async () => {
-        /*
-        const res = await cancelAccountFunction();
+        const res = await cancelSubscriptionFunction();
         if (!res.ok) {
-            console.error("Account cancellation failed: ", res.error);
-            alert("Account cancellation failed"); // TODO: Replace with better error handling
+            console.error("Subscription cancellation failed: ", res.error);
+            alert("Subscription cancellation failed"); // TODO: Replace with better error handling
             return;
         }
-        alert("Your account has been successfully cancelled."); // TODO: Replace with better success handling
-        setCancelAccountDialogOpen(false);
+        alert("Your subscription has been successfully cancelled."); // TODO: Replace with better success handling
+        setCancelSubscriptionDialogOpen(false);
         logout();
-        */
     }
 
     return (

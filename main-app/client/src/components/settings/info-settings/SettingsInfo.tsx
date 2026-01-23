@@ -1,4 +1,4 @@
-import { LinkRow, SettingsCard } from "./SettingsUtility";
+import { LinkRow, SettingsCard } from "../SettingsUtility";
 
 export default function SettingsInfo() {
     return (

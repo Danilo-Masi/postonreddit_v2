@@ -1,6 +1,6 @@
 import { useAppContext } from "@/context/AppContext";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
-import { cancelAccountFunction } from "@/api/auth/cancel";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { cancelAccountFunction } from "@/api/auth/cancel-account";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CancelAccountDialog() {
