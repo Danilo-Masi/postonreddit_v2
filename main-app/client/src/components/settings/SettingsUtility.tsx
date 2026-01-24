@@ -30,7 +30,7 @@ function DangerRow({ title, description, buttonLabel, onClick }: { title: string
         <div className="mt-2 rounded-md border border-red-500/30 bg-red-500/5 p-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div>
                 <p className="text-sm font-medium text-red-400">{title}</p>
-                <p className="text-xs text-red-400/80">{description}</p>
+                <p className="text-xs text-red-400/80 text-clip">{description}</p>
             </div>
             <Button
                 variant="destructive"

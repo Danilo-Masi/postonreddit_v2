@@ -1,45 +1,46 @@
 import { useAppContext } from "@/context/AppContext";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { cancelAccountFunction } from "@/api/auth/cancel-account";
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
+import { toast } from "sonner";
+import ExitDialog from "@/components/ui/exit-dialog";
 
 export default function CancelAccountDialog() {
     const { logout } = useAuth();
     const { isCancelAccountDialogOpen, setCancelAccountDialogOpen } = useAppContext();
+    const [isLoading, setLoading] = useState(false);
 
     const handleCancelAccount = async () => {
-        const res = await cancelAccountFunction();
-        if (!res.ok) {
-            console.error("Account cancellation failed: ", res.error);
-            alert("Account cancellation failed"); // TODO: Replace with better error handling
-            return;
+        if (isLoading) return;
+        setLoading(true);
+        try {
+            const res = await cancelAccountFunction();
+            if (!res.ok) {
+                console.error("Account cancellation failed: ", res.error);
+                toast.warning("Account cancellation failed");
+                return;
+            }
+            toast.success("Your account has been successfully cancelled.");
+            logout();
+        } catch (error) {
+            console.error("An unexpected error occurred during account cancellation: ", error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-        alert("Your account has been successfully cancelled."); // TODO: Replace with better success handling
-        setCancelAccountDialogOpen(false);
-        logout();
     }
 
     return (
-        <AlertDialog open={isCancelAccountDialogOpen} onOpenChange={() => setCancelAccountDialogOpen(false)}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to cancel your account? This action is irreversible and will delete all your data from our servers.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel
-                        className="curosor-pointer">
-                        Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                        className="bg-red-600 hover:bg-red-600/80 cursor-pointer"
-                        onClick={handleCancelAccount}>
-                        Confirm
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+        <ExitDialog
+            isOpen={isCancelAccountDialogOpen}
+            onOpenChange={() => setCancelAccountDialogOpen(false)}
+            title="Delete your account?"
+            description="This action is permanent. Your account and all associated data will be permanently deleted and cannot be recovered."
+            cancelText="Keep account"
+            actionText="Delete account"
+            loadingText="Loading"
+            onAction={handleCancelAccount}
+            isLoading={isLoading}
+        />
     )
 }

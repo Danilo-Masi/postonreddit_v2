@@ -1,23 +1,35 @@
-import { LogOut } from "lucide-react";
+import { LockOpen, LogOut } from "lucide-react";
 import { redditAuthorize } from "@/api/reddit/reddit-authorize";
 import { useAppContext } from "@/context/AppContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DangerRow, SettingRow, SettingsCard } from "../SettingsUtility";
-
+import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 export default function SettingsApp() {
+    const [isRedditButtonLoading, setRedditButtonLoading] = useState(false);
     const { setLogoutDialogOpen, setCancelAccountDialogOpen } = useAppContext();
 
     // Reddit authorization function
     const handleRedditAuthorize = async () => {
-        const res = await redditAuthorize();
-        if (!res.ok) {
-            console.log("Reddit authorization failed: ", res.error);
-            alert("Reddit authorization failed");
-            return;
+        if (isRedditButtonLoading) return;
+        setRedditButtonLoading(true);
+        try {
+            const res = await redditAuthorize();
+            if (!res.ok) {
+                console.log("Reddit authorization failed: ", res.error);
+                toast.warning("Reddit authorization failed");
+                return;
+            }
+            window.location.href = res.url;
+        } catch (error) {
+            console.error("An unexpected error occurred during Reddit authorization: ", error);
+            toast.error("Something went wrong");
+        } finally {
+            setRedditButtonLoading(false);
         }
-        window.location.href = res.url;
     }
 
     return (
@@ -28,8 +40,12 @@ export default function SettingsApp() {
                 description="Required to publish posts on your behalf.">
                 <Button
                     onClick={handleRedditAuthorize}
-                    className="w-full md:w-auto md:min-w-1/3 cursor-pointer bg-orange-600 hover:bg-orange-600/80">
-                    Grant permission
+                    className="w-full md:w-auto md:min-w-1/3 cursor-pointer bg-orange-600 hover:bg-orange-600/80 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isRedditButtonLoading}>
+                    {isRedditButtonLoading
+                        ? (<> <Spinner />Loading</>)
+                        : (<><LockOpen />Grant permission</>)
+                    }
                 </Button>
             </SettingRow>
             {/* Theme selection */}

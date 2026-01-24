@@ -1,48 +1,45 @@
 import { useAppContext } from "@/context/AppContext";
-
 import { logoutFunction } from "@/api/auth/logout";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useState } from "react";
+import { toast } from "sonner";
+import ExitDialog from "@/components/ui/exit-dialog";
 
 export default function LogoutDialog() {
-    const navigate = useNavigate();
     const { logout } = useAuth();
     const { isLogoutDialogOpen, setLogoutDialogOpen } = useAppContext();
+    const [isLoading, setLoading] = useState(false);
 
-    // Logout function
     const handleLogout = async () => {
-        const res = await logoutFunction();
-        if (!res.ok) {
-            console.log("Logout failed: ", res.error);
-            alert("Logout failed");
-            return;
+        if (isLoading) return;
+        setLoading(true);
+        try {
+            const res = await logoutFunction();
+            if (!res.ok) {
+                console.error("Logout failed: ", res.error);
+                toast.warning("Logout failed");
+                return;
+            }
+            logout();
+        } catch (error) {
+            console.error("An unexpected error occurred during logout: ", error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-        logout();
-        navigate("/login");
     }
 
     return (
-        <AlertDialog open={isLogoutDialogOpen} onOpenChange={() => setLogoutDialogOpen(false)}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to log out? You will need to log in again to access your account.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel
-                        className="curosor-pointer">
-                        Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                        className="bg-red-600 hover:bg-red-600/80 cursor-pointer"
-                        onClick={handleLogout}>
-                        Confirm
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+        <ExitDialog
+            isOpen={isLogoutDialogOpen}
+            onOpenChange={() => setLogoutDialogOpen(false)}
+            title="Confirm logout"
+            description="Once logged out, you’ll need to sign in again to access your account."
+            cancelText="Cancel"
+            actionText="Confirm logout"
+            loadingText="Loading"
+            onAction={handleLogout}
+            isLoading={isLoading}
+        />
     )
 }

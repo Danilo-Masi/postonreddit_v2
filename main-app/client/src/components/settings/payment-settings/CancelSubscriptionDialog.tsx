@@ -1,45 +1,47 @@
 import { cancelSubscriptionFunction } from "@/api/billing/cancel-subscription";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import ExitDialog from "@/components/ui/exit-dialog";
 import { useAppContext } from "@/context/AppContext";
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function CancelSubscriptionDialog() {
     const { logout } = useAuth();
     const { isCancelSubscriptionDialogOpen, setCancelSubscriptionDialogOpen } = useAppContext();
+    const [isLoading, setLoading] = useState(false);
 
     const handleCancelSubscription = async () => {
-        const res = await cancelSubscriptionFunction();
-        if (!res.ok) {
-            console.error("Subscription cancellation failed: ", res.error);
-            alert("Subscription cancellation failed"); // TODO: Replace with better error handling
-            return;
+        if (isLoading) return;
+        setLoading(true);
+        try {
+            const res = await cancelSubscriptionFunction();
+            if (!res.ok) {
+                console.error("Subscription cancellation failed: ", res.error);
+                toast.warning("Subscription cancellation failed");
+                setLoading(false);
+                return;
+            }
+            toast.success("Your subscription has been successfully cancelled.");
+            logout();
+        } catch (error) {
+            console.error("An unexpected error occurred during subscription cancellation: ", error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-        alert("Your subscription has been successfully cancelled."); // TODO: Replace with better success handling
-        setCancelSubscriptionDialogOpen(false);
-        logout();
     }
 
     return (
-        <AlertDialog open={isCancelSubscriptionDialogOpen} onOpenChange={() => setCancelSubscriptionDialogOpen(false)}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to cancel your subscription? This action is irreversible and will delete all your subscription data from our servers.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel
-                        className="curosor-pointer">
-                        Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                        className="bg-red-600 hover:bg-red-600/80 cursor-pointer"
-                        onClick={handleCancelSubscription}>
-                        Confirm
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+        <ExitDialog
+            isOpen={isCancelSubscriptionDialogOpen}
+            onOpenChange={() => setCancelSubscriptionDialogOpen(false)}
+            title="Cancel your subscription?"
+            description="You’ll keep access to your plan until the end of the current billing period. After that, your subscription will not renew."
+            cancelText="Keep subscription"
+            actionText="Cancel subscription"
+            loadingText="Loading"
+            onAction={handleCancelSubscription}
+            isLoading={isLoading}
+        />
     )
 }

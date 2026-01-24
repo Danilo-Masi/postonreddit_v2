@@ -13,6 +13,7 @@ export default function SettingsPayment() {
                 title="Invoices"
                 description="View and download your past invoices.">
                 <Button
+                    disabled
                     variant="outline"
                     className="w-full md:w-auto md:min-w-1/3 cursor-pointer text-zinc-800">
                     View invoices <TicketCheck />
