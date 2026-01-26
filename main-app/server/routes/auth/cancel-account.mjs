@@ -20,10 +20,6 @@ export default async function cancelAccountRoute(fastify) {
                 .eq('id', userId)
                 .single();
 
-            // TODO: Risolvere problema fetch profile
-            // TODO: Risolvere problema fetch profile
-            console.log("Fetched profile data: ", data); // DEBUG LOG 
-
             if (profilesError || !data) {
                 request.log.error("Error fetching user profile: " + profilesError.message);
                 return reply.status(500).send({ ok: false, error: "Error fetching user profile" });

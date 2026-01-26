@@ -1,16 +1,34 @@
-import { LockOpen, LogOut } from "lucide-react";
+import { Lock, LockOpen, LogOut } from "lucide-react";
 import { redditAuthorize } from "@/api/reddit/reddit-authorize";
 import { useAppContext } from "@/context/AppContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DangerRow, SettingRow, SettingsCard } from "../SettingsUtility";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
+import { redditStatus } from "@/api/reddit/reddit-status";
 
 export default function SettingsApp() {
     const [isRedditButtonLoading, setRedditButtonLoading] = useState(false);
+    const [isRedditButtonActive, setRedditButtonActive] = useState(true);
     const { setLogoutDialogOpen, setCancelAccountDialogOpen } = useAppContext();
+
+    //Verify Reddit authorization
+    useEffect(() => {
+        const checkRedditStatus = async () => {
+            const res = await redditStatus();
+
+            if (!res.ok) {
+                setRedditButtonActive(true);
+                return;
+            }
+
+            setRedditButtonActive(false);
+        };
+
+        checkRedditStatus();
+    }, []);
 
     // Reddit authorization function
     const handleRedditAuthorize = async () => {
@@ -38,15 +56,27 @@ export default function SettingsApp() {
             <SettingRow
                 title="Reddit authorization"
                 description="Required to publish posts on your behalf.">
-                <Button
-                    onClick={handleRedditAuthorize}
-                    className="w-full md:w-auto md:min-w-1/3 cursor-pointer bg-orange-600 hover:bg-orange-600/80 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isRedditButtonLoading}>
-                    {isRedditButtonLoading
-                        ? (<> <Spinner />Loading</>)
-                        : (<><LockOpen />Grant permission</>)
-                    }
-                </Button>
+                {isRedditButtonActive ? (
+                    <Button
+                        onClick={handleRedditAuthorize}
+                        className="w-full md:w-auto md:min-w-1/3 cursor-pointer bg-orange-600 hover:bg-orange-600/80 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isRedditButtonLoading}>
+                        {isRedditButtonLoading
+                            ? (<> <Spinner />Loading</>)
+                            : (<><LockOpen />Grant permission</>)
+                        }
+                    </Button>
+                ) : (
+                    <Button
+                        variant="destructive"
+                        className="w-full md:w-auto md:min-w-1/3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isRedditButtonLoading}>
+                        {isRedditButtonLoading
+                            ? (<> <Spinner />Loading</>)
+                            : (<><Lock />Dismiss permission</>)
+                        }
+                    </Button>
+                )}
             </SettingRow>
             {/* Theme selection */}
             <SettingRow

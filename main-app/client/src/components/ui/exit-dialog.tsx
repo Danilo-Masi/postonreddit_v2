@@ -17,15 +17,15 @@ interface ExitDialogProps {
 export default function ExitDialog({ isOpen, onOpenChange, title, description, cancelText, actionText, loadingText, onAction, isLoading }: ExitDialogProps) {
     return (
         <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="bg-zinc-800 border border-zinc-600">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>{title}</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogTitle className="text-zinc-100">{title}</AlertDialogTitle>
+                    <AlertDialogDescription className="text-zinc-400/80">
                         {description}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>
+                    <AlertDialogCancel className="cursor-pointer">
                         {cancelText}
                     </AlertDialogCancel>
                     <AlertDialogAction
