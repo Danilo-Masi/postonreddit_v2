@@ -6,16 +6,15 @@ export async function redditStatus() {
         });
 
         const data = await response.json();
-        console.log("API DATA: ", data);
 
-        if (!response.ok) {
-            console.error("Reddit authorization error: ", data.error);
-            return { ok: false, error: data.error };
+        if (!response.ok || data.valid === false) {
+            console.error("Reddit authorization invalid: ", data);
+            return { ok: false, valid: false, error: data.message || "Invalid tokens" };
         }
 
-        return { ok: true };
+        return { ok: true, valid: true };
     } catch (error) {
         console.error("Network error during Reddit authorization: ", error);
-        return { ok: false, error: "Network error" };
+        return { ok: false, valid: false, error: "Network error" };
     }
 }

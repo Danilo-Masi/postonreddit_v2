@@ -7,6 +7,7 @@ interface ExitDialogProps {
     onOpenChange: (open: boolean) => void;
     title: string;
     description: string;
+    note?: string;
     cancelText: string;
     actionText: string;
     loadingText: string;
@@ -14,18 +15,21 @@ interface ExitDialogProps {
     isLoading: boolean;
 }
 
-export default function ExitDialog({ isOpen, onOpenChange, title, description, cancelText, actionText, loadingText, onAction, isLoading }: ExitDialogProps) {
+export default function ExitDialog({ isOpen, onOpenChange, title, description, note, cancelText, actionText, loadingText, onAction, isLoading }: ExitDialogProps) {
     return (
         <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
             <AlertDialogContent className="bg-zinc-800 border border-zinc-600">
                 <AlertDialogHeader>
                     <AlertDialogTitle className="text-zinc-100">{title}</AlertDialogTitle>
-                    <AlertDialogDescription className="text-zinc-400/80">
-                        {description}
+                    <AlertDialogDescription>
+                        <p className="text-zinc-400/80">{description}</p>
+                        <p className="text-zinc-400/60 text-xs mt-2">{note}</p>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className="cursor-pointer">
+                    <AlertDialogCancel
+                        className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isLoading}>
                         {cancelText}
                     </AlertDialogCancel>
                     <AlertDialogAction

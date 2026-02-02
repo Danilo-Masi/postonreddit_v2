@@ -11,22 +11,19 @@ import { redditStatus } from "@/api/reddit/reddit-status";
 
 export default function SettingsApp() {
     const [isRedditButtonLoading, setRedditButtonLoading] = useState(false);
-    const [isRedditButtonActive, setRedditButtonActive] = useState(true);
-    const { setLogoutDialogOpen, setCancelAccountDialogOpen } = useAppContext();
+    const [isRedditButtonActive, setRedditButtonActive] = useState(false);
+    const { setDismissPermissionDialogOpen, setLogoutDialogOpen, setCancelAccountDialogOpen } = useAppContext();
 
     //Verify Reddit authorization
     useEffect(() => {
         const checkRedditStatus = async () => {
             const res = await redditStatus();
-
-            if (!res.ok) {
+            if (!res.ok || !res.valid) {
                 setRedditButtonActive(true);
                 return;
             }
-
             setRedditButtonActive(false);
         };
-
         checkRedditStatus();
     }, []);
 
@@ -68,6 +65,7 @@ export default function SettingsApp() {
                     </Button>
                 ) : (
                     <Button
+                        onClick={() => setDismissPermissionDialogOpen(true)}
                         variant="destructive"
                         className="w-full md:w-auto md:min-w-1/3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isRedditButtonLoading}>

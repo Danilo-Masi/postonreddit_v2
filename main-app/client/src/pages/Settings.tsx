@@ -1,6 +1,7 @@
 import Layout from "../components/layout/Layout";
 import SettingsContainer from "@/components/settings/SettingsContainer";
 import CancelAccountDialog from "@/components/settings/app-settings/CancelAccountDialog";
+import DismissPermissionDialog from "@/components/settings/app-settings/DismissPermissionDialog";
 import LogoutDialog from "@/components/settings/app-settings/LogoutDialog";
 import CancelSubscriptionDialog from "@/components/settings/payment-settings/CancelSubscriptionDialog";
 
@@ -9,6 +10,7 @@ export default function Settings() {
         <Layout>
             <SettingsContainer />
             <LogoutDialog />
+            <DismissPermissionDialog />
             <CancelAccountDialog />
             <CancelSubscriptionDialog />
         </Layout>

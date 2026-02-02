@@ -26,6 +26,8 @@ type AppContextType = {
     flairsSelected: FlairType[];
     setFlairsSelected: Dispatch<SetStateAction<FlairType[]>>;
     // App settings
+    isDismissPermissionDialogOpen: boolean;
+    setDismissPermissionDialogOpen: Dispatch<SetStateAction<boolean>>;
     isLogoutDialogOpen: boolean;
     setLogoutDialogOpen: Dispatch<SetStateAction<boolean>>;
     isCancelAccountDialogOpen: boolean;
@@ -47,6 +49,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([]);
     const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
     // App settings
+    const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
     const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [isCancelAccountDialogOpen, setCancelAccountDialogOpen] = useState(false);
     // Payment settings
@@ -70,6 +73,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 flairsSelected,
                 setFlairsSelected,
                 // App settings
+                isDismissPermissionDialogOpen,
+                setDismissPermissionDialogOpen,
                 isLogoutDialogOpen,
                 setLogoutDialogOpen,
                 isCancelAccountDialogOpen,
