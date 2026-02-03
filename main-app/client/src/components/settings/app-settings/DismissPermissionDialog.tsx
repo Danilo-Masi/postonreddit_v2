@@ -1,13 +1,33 @@
+import { redditDisconnectFunction } from "@/api/reddit/reddit-disconnect";
 import ExitDialog from "@/components/ui/exit-dialog";
 import { useAppContext } from "@/context/AppContext"
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function DismissPermissionDialog() {
     const [isLoading, setLoading] = useState(false);
-    const { isDismissPermissionDialogOpen, setDismissPermissionDialogOpen } = useAppContext();
+    const { setRedditButtonActive, isDismissPermissionDialogOpen, setDismissPermissionDialogOpen } = useAppContext();
 
     const handleDismissPermission = async () => {
-        // TODO
+        if (isLoading) return;
+        setLoading(true);
+
+        try {
+            const res = await redditDisconnectFunction();
+
+            if (!res.ok) {
+                console.error("Reddit disconnect failed: ", res.error);
+                toast.warning("Unable to disconnect Reddit. Please try again.");
+                return;
+            }
+            toast.success("Reddit has been disconnected successfully.");
+            setRedditButtonActive(true);
+        } catch (error) {
+            console.error("Unexpected error during disconnect: ", error);
+            toast.error("Network erorr. Please check your connection.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (

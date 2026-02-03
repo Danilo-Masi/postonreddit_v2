@@ -11,8 +11,7 @@ import { redditStatus } from "@/api/reddit/reddit-status";
 
 export default function SettingsApp() {
     const [isRedditButtonLoading, setRedditButtonLoading] = useState(false);
-    const [isRedditButtonActive, setRedditButtonActive] = useState(false);
-    const { setDismissPermissionDialogOpen, setLogoutDialogOpen, setCancelAccountDialogOpen } = useAppContext();
+    const { isRedditButtonActive, setRedditButtonActive, setDismissPermissionDialogOpen, setLogoutDialogOpen, setCancelAccountDialogOpen } = useAppContext();
 
     //Verify Reddit authorization
     useEffect(() => {

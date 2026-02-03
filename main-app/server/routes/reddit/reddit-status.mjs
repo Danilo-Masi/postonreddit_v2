@@ -16,7 +16,7 @@ export default async function redditStatusRoute(fastify, opts) {
                 .from("reddit_tokens")
                 .select("access_token, refresh_token, token_expiry")
                 .eq("user_id", userId)
-                .select();
+                .single();
 
             if (error) {
                 request.log.error("Errore durante il recupero dei token di Reddit: " + error?.message);
@@ -26,6 +26,7 @@ export default async function redditStatusRoute(fastify, opts) {
             // Validate the tokens
             const { access_token, refresh_token, token_expiry } = data;
             const now = new Date();
+            
             if (!access_token || !refresh_token || !token_expiry || new Date(token_expiry) <= now) {
                 try {
                     const refresh = await redditRefresh(refresh_token, userId);

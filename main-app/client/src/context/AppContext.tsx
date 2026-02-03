@@ -26,6 +26,8 @@ type AppContextType = {
     flairsSelected: FlairType[];
     setFlairsSelected: Dispatch<SetStateAction<FlairType[]>>;
     // App settings
+    isRedditButtonActive: boolean;
+    setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
     isDismissPermissionDialogOpen: boolean;
     setDismissPermissionDialogOpen: Dispatch<SetStateAction<boolean>>;
     isLogoutDialogOpen: boolean;
@@ -49,6 +51,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([]);
     const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
     // App settings
+    const [isRedditButtonActive, setRedditButtonActive] = useState(false);
     const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
     const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [isCancelAccountDialogOpen, setCancelAccountDialogOpen] = useState(false);
@@ -73,6 +76,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 flairsSelected,
                 setFlairsSelected,
                 // App settings
+                isRedditButtonActive,
+                setRedditButtonActive,
                 isDismissPermissionDialogOpen,
                 setDismissPermissionDialogOpen,
                 isLogoutDialogOpen,
