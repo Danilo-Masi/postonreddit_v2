@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useState } from "react"
+import { useAppContext } from "@/context/AppContext"
 
 const frameworks = [
     { value: "next.js", label: "Next.js" },
@@ -16,6 +17,7 @@ const frameworks = [
 export default function SubredditMultiselect() {
     const [open, setOpen] = useState(false)
     const [values, setValues] = useState<string[]>([])
+    const { setSubredditsSelected } = useAppContext();
 
     const toggleValue = (value: string) => {
         setValues((prev) =>
