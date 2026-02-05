@@ -10,7 +10,6 @@ export default async function redditAuthorizeRoute(fastify, opts) {
         // Validate user
         const access_token = request.cookies.access_token;
         const validatedUser = await getAuthenticatedUser(access_token);
-        // Get user ID
         const userId = validatedUser.id;
         // Create state parameter to prevent CSRF
         const state = `user_id:${userId}`;

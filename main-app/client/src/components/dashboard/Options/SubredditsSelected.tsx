@@ -1,5 +1,5 @@
 import { useAppContext } from "@/context/AppContext";
-import { XCircle } from "lucide-react";
+import { X } from "lucide-react";
 
 export default function SubredditsSelected() {
     const { subredditsSelected } = useAppContext();
@@ -9,10 +9,10 @@ export default function SubredditsSelected() {
             <h4 className="w-full text-sm font-light text-zinc-300">Subreddits selected</h4>
             {subredditsSelected.map((sub) => (
                 <div
-                    key={sub.id}
+                    key={sub}
                     className="min-w-[calc(50%-10px)] h-fit flex justify-between p-3 md:p-2 bg-zinc-800 hover:bg-zinc-800/60 rounded-md text-zinc-300 text-sm cursor-pointer" >
-                    {sub.name}
-                    <XCircle className="h-5 w-5 ml-3" />
+                    {sub}
+                    <X className="h-4 w-4" />
                 </div>
             ))}
         </div>

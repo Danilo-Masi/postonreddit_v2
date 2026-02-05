@@ -1,4 +1,4 @@
-import { supabase } from "../../config/supabase.mjs";
+import { supabaseAdmin } from "../../config/supabase.mjs";
 
 export default async function redditConnectRoute(fastify, opts) {
 
@@ -39,7 +39,7 @@ export default async function redditConnectRoute(fastify, opts) {
             const token_expiry = new Date(Date.now() + expires_in * 1000);
             const user_id = state.split(":")[1];
 
-            const { error } = await supabase
+            const { error } = await supabaseAdmin
                 .from('reddit_tokens')
                 .upsert({
                     user_id: user_id,
@@ -56,7 +56,7 @@ export default async function redditConnectRoute(fastify, opts) {
                 });
             }
 
-            return reply.redirect("http://localhost:3000"); // TODO: UPDATE
+            return reply.redirect("http://localhost:5173"); // TODO: UPDATE
 
         } catch (error) {
             request.log.error("Errore interno OAuth Reddit: " + error?.message);

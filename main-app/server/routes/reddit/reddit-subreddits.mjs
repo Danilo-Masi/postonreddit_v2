@@ -2,9 +2,9 @@ import { supabase } from "../../config/supabase.mjs";
 import { getAuthenticatedUser } from "../../services/auth.service.mjs";
 import { redditRefresh } from "../../services/reddit.service.mjs";
 
-export default async function redditStatusRoute(fastify, opts) {
+export default async function redditSubredditsRoute(fastify, opts) {
 
-    fastify.get("/status", async (request, reply) => {
+    fastify.get("/subreddits", async (request, reply) => {
         try {
             // Validate query
             const { q } = request.query;
@@ -39,7 +39,7 @@ export default async function redditStatusRoute(fastify, opts) {
 
             // Call Reddit API
             const redditRes = await fetch(
-                `https://oauth.reddit.com/subreddits/search?q=${encodeURIComponent(q)}&limit=10`,
+                `https://oauth.reddit.com/subreddits/search?q=${encodeURIComponent(q)}&limit=5`,
                 {
                     headers: {
                         "Authorization": `Bearer ${access_token}`,
@@ -55,8 +55,7 @@ export default async function redditStatusRoute(fastify, opts) {
             const json = await redditRes.json();
 
             const subreddits = json.data.children.map((child) => ({
-                name: child.data.dispaly_name,
-                title: child.data.title,
+                name: child.data.display_name_prefixed,
             }));
 
             return reply.send({ ok: true, subreddits });

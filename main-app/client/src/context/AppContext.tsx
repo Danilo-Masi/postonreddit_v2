@@ -21,8 +21,8 @@ type AppContextType = {
     setTitlePost: Dispatch<SetStateAction<string>>;
     contentPost: string;
     setContentPost: Dispatch<SetStateAction<string>>;
-    subredditsSelected: SubredditType[];
-    setSubredditsSelected: Dispatch<SetStateAction<SubredditType[]>>;
+    subredditsSelected: string[];
+    setSubredditsSelected: Dispatch<SetStateAction<string[]>>;
     flairsSelected: FlairType[];
     setFlairsSelected: Dispatch<SetStateAction<FlairType[]>>;
     // App settings
@@ -48,7 +48,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     // Post options
     const [titlePost, setTitlePost] = useState("");
     const [contentPost, setContentPost] = useState("");
-    const [subredditsSelected, setSubredditsSelected] = useState<SubredditType[]>([]);
+    const [subredditsSelected, setSubredditsSelected] = useState<string[]>([]);
     const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
