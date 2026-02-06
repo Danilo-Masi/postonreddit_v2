@@ -17,7 +17,7 @@ export default function SubredditMultiselect() {
     const [results, setResults] = useState<Subreddit[]>([])
     const [values, setValues] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
-    const { setSubredditsSelected } = useAppContext()
+    const { subredditsSelected, setSubredditsSelected } = useAppContext()
 
     // Fetch with debounce
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function SubredditMultiselect() {
             const res = await getSubreddits(search)
             if (res.ok) setResults(res.subreddits)
             setLoading(false)
-        }, 350)
+        }, 350);
 
         return () => clearTimeout(timeout)
     }, [search])
@@ -45,7 +45,7 @@ export default function SubredditMultiselect() {
 
             setSubredditsSelected(updated)
             return updated
-        })
+        });
     }
 
     return (
@@ -58,7 +58,7 @@ export default function SubredditMultiselect() {
                     className="w-full h-fit justify-between bg-zinc-800 border border-zinc-700">
                     {values.length === 0
                         ? "Select subreddits..."
-                        : `${values.length} selected`}
+                        : `${subredditsSelected.length} selected`}
                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -89,8 +89,7 @@ export default function SubredditMultiselect() {
                                         key={sub.name}
                                         value={sub.name}
                                         onSelect={() => toggleValue(sub.name)}>
-                                        <CheckIcon
-                                            className={cn("mr-2 h-4 w-4", selected ? "opacity-100" : "opacity-0")} />
+                                        <CheckIcon className={cn("mr-2 h-4 w-4", selected ? "opacity-100" : "opacity-0")} />
                                         {sub.name}
                                     </CommandItem>
                                 )

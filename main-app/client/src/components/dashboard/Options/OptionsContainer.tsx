@@ -16,11 +16,11 @@ export default function OptionsContainer() {
 
       {subredditsSelected.length >= 1 ? (
         <>
-          <div className="w-full h-full flex flex-col gap-8 overflow-scroll">
+          <div className="w-full h-full flex flex-col gap-5 overflow-scroll">
             <SubredditMultiselect />
             <SubredditsSelected />
             {subredditsSelected.map((sub) => (
-              <FlairsSelect subName={sub.name} key={sub.id} />
+              <FlairsSelect subName={sub} key={sub} />
             ))
             }
           </div>

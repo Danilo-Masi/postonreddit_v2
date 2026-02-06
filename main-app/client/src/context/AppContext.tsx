@@ -1,13 +1,8 @@
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 
-type SubredditType = {
-    id: number;
-    name: string;
-}
-
 type FlairType = {
-    subreddit: string;
-    flair: string | null;
+    id: string | null;
+    name: string | null;
 }
 
 type AppContextType = {
