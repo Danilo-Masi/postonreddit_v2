@@ -1,4 +1,3 @@
-import { cookiesOptions } from "../../config/cookies.mjs";
 import { supabase } from "../../config/supabase.mjs";
 
 export default async function logoutRoute(fastify) {

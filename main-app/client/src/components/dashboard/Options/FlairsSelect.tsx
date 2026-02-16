@@ -23,9 +23,8 @@ export default function FlairsSelect({ subName }: { subName: string }) {
     return (
         <div className="w-full h-fit max-h-auto flex flex-col gap-3">
             <h3 className="text-sm text-zinc-200">Select the flair for <span className="font-bold">{subName}</span></h3>
-            <Select>
+            <Select onOpenChange={(open) => { if (open) handleFlairSelect() }}>
                 <SelectTrigger
-                    onClick={handleFlairSelect}
                     className="w-full cursor-pointer border-zinc-600 text-zinc-100">
                     <SelectValue placeholder="No flair selected" />
                 </SelectTrigger>
@@ -35,7 +34,6 @@ export default function FlairsSelect({ subName }: { subName: string }) {
                             Searching flairs...
                         </div>
                     )}
-
                     {flairValues.map((flair) => (
                         <SelectItem key={flair.id} value={flair.id}>{flair.name}</SelectItem>
                     ))}

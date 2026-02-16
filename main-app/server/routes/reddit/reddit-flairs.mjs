@@ -1,4 +1,4 @@
-import { supabase } from "../../config/supabase.mjs";
+import { supabaseAdmin } from "../../config/supabase.mjs";
 import { getAuthenticatedUser } from "../../services/auth.service.mjs";
 import { redditRefresh } from "../../services/reddit.service.mjs";
 
@@ -18,7 +18,7 @@ export default async function redditFlairsRoute(fastify, opts) {
             const userId = validatedUser.id;
 
             // Get Reddit tokens
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from("reddit_tokens")
                 .select("access_token, refresh_token, token_expiry")
                 .eq("user_id", userId)
@@ -39,24 +39,24 @@ export default async function redditFlairsRoute(fastify, opts) {
 
             // Call Reddit API
             const redditRes = await fetch(
-                `https://oauth.reddit.com/r/subreddits/api/link_flair_v2?q=${encodeURIComponent(q)}`,
+                `https://oauth.reddit.com/r/${encodeURIComponent(q)}/api/link_flair_v2`,
                 {
                     headers: {
-                        "Authorization": `Bearer ${access_token}`,
+                        Authorization: `Bearer ${access_token}`,
                         "User-Agent": "postonreddit/2.0.0 by WerewolfCapital4616",
                     },
-                });
+                }
+            );
 
             if (!redditRes.ok) {
-                request.log.error("Reddit API error: ", redditRes.json());
+                const text = await redditRes.text();
+                request.log.error("Reddit API error: " + text);
                 return reply.status(500).send({ ok: false });
             }
 
-            const json = await redditRes.json();
+            const dataRes = await redditRes.json();
 
-            console.log(json); // DEBUGL LOG
-
-            const flairs = json.data.map((child) => ({
+            const flairs = dataRes.map((child) => ({
                 id: child.id,
                 name: child.text,
             }));
@@ -64,7 +64,7 @@ export default async function redditFlairsRoute(fastify, opts) {
             return reply.send({ ok: true, flairs });
 
         } catch (error) {
-            request.log.error("Error /reddit/flairs: ", error);
+            request.log.error("Error /reddit/flairs: " + error.message);
             return reply.status(500).send({ ok: false });
         }
     });

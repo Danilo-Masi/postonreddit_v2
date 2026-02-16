@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 
-type FlairType = {
-    id: string | null;
-    name: string | null;
-}
+type SubredditTarget = {
+    subreddit: string;
+    flairId: string | null;
+    flairName: string | null;
+    schedueledAt: string | null;
+};
 
 type AppContextType = {
     // Responsive
@@ -16,10 +18,12 @@ type AppContextType = {
     setTitlePost: Dispatch<SetStateAction<string>>;
     contentPost: string;
     setContentPost: Dispatch<SetStateAction<string>>;
+    subredditTargets: SubredditTarget[];
+    setSubredditTargets: Dispatch<SetStateAction<SubredditTarget[]>>;
     subredditsSelected: string[];
     setSubredditsSelected: Dispatch<SetStateAction<string[]>>;
-    flairsSelected: FlairType[];
-    setFlairsSelected: Dispatch<SetStateAction<FlairType[]>>;
+    flairsSelected: string[];
+    setFlairsSelected: Dispatch<SetStateAction<string[]>>;
     // App settings
     isRedditButtonActive: boolean;
     setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
@@ -43,8 +47,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     // Post options
     const [titlePost, setTitlePost] = useState("");
     const [contentPost, setContentPost] = useState("");
+    const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
     const [subredditsSelected, setSubredditsSelected] = useState<string[]>([]);
-    const [flairsSelected, setFlairsSelected] = useState<FlairType[]>([]);
+    const [flairsSelected, setFlairsSelected] = useState<string[]>([]);
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
     const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
@@ -66,6 +71,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setTitlePost,
                 contentPost,
                 setContentPost,
+                subredditTargets,
+                setSubredditTargets,
                 subredditsSelected,
                 setSubredditsSelected,
                 flairsSelected,
