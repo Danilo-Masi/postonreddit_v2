@@ -4,7 +4,7 @@ type SubredditTarget = {
     subreddit: string;
     flairId: string | null;
     flairName: string | null;
-    schedueledAt: string | null;
+    scheduledAt: string | null;
 };
 
 type AppContextType = {
@@ -20,10 +20,10 @@ type AppContextType = {
     setContentPost: Dispatch<SetStateAction<string>>;
     subredditTargets: SubredditTarget[];
     setSubredditTargets: Dispatch<SetStateAction<SubredditTarget[]>>;
-    subredditsSelected: string[];
-    setSubredditsSelected: Dispatch<SetStateAction<string[]>>;
-    flairsSelected: string[];
-    setFlairsSelected: Dispatch<SetStateAction<string[]>>;
+    //subredditsSelected: string[];
+    //setSubredditsSelected: Dispatch<SetStateAction<string[]>>;
+    //flairsSelected: string[];
+    //setFlairsSelected: Dispatch<SetStateAction<string[]>>;
     // App settings
     isRedditButtonActive: boolean;
     setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
@@ -48,8 +48,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [titlePost, setTitlePost] = useState("");
     const [contentPost, setContentPost] = useState("");
     const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
-    const [subredditsSelected, setSubredditsSelected] = useState<string[]>([]);
-    const [flairsSelected, setFlairsSelected] = useState<string[]>([]);
+    //const [subredditsSelected, setSubredditsSelected] = useState<string[]>([]);
+    //const [flairsSelected, setFlairsSelected] = useState<string[]>([]);
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
     const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
@@ -73,10 +73,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setContentPost,
                 subredditTargets,
                 setSubredditTargets,
-                subredditsSelected,
-                setSubredditsSelected,
-                flairsSelected,
-                setFlairsSelected,
+                //subredditsSelected,
+                //setSubredditsSelected,
+                //flairsSelected,
+                //setFlairsSelected,
                 // App settings
                 isRedditButtonActive,
                 setRedditButtonActive,

@@ -8,19 +8,19 @@ import ProgressBar from "../ProgressBar";
 
 export default function OptionsContainer() {
   const isMobile = useIsMobile();
-  const { subredditsSelected } = useAppContext();
+  const { subredditTargets } = useAppContext();
 
   return (
     <div className="w-full md:w-[calc(35%-10px)] h-full overflow-scroll flex flex-col gap-5">
       {isMobile && <ProgressBar />}
 
-      {subredditsSelected.length >= 1 ? (
+      {subredditTargets.length >= 1 ? (
         <>
           <div className="w-full h-full flex flex-col gap-5 overflow-scroll">
             <SubredditMultiselect />
             <SubredditsSelected />
-            {subredditsSelected.map((sub) => (
-              <FlairsSelect subName={sub} key={sub} />
+            {subredditTargets.map((sub) => (
+              <FlairsSelect subName={sub.subreddit} key={sub.subreddit} />
             ))
             }
           </div>

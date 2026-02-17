@@ -38,28 +38,54 @@ export default async function redditFlairsRoute(fastify, opts) {
             }
 
             // Call Reddit API
-            const redditRes = await fetch(
-                `https://oauth.reddit.com/r/${encodeURIComponent(q)}/api/link_flair_v2`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${access_token}`,
-                        "User-Agent": "postonreddit/2.0.0 by WerewolfCapital4616",
-                    },
-                }
-            );
+            let redditRes;
+            try {
+                redditRes = await fetch(
+                    `https://oauth.reddit.com/r/${encodeURIComponent(q)}/api/link_flair_v2`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${access_token}`,
+                            "User-Agent": "postonreddit/2.0.0 by WerewolfCapital4616",
+                        },
+                    }
+                );
+            } catch (fetchError) {
+                request.log.error("Fetch error: " + fetchError.message);
+                return reply.status(500).send({ ok: false, flairs: [] });
+            }
 
             if (!redditRes.ok) {
+                // 403 and 404 are common for private or non-existent subreddits
+                if (redditRes.status === 403 || redditRes.status === 404) {
+                    request.log.warn(`Reddit subreddit ${q} flairs not accessinle (status: ${redditRes.status})`);
+                    return reply.status(200).send({ ok: true, flairs: [] });
+                }
+                // Log other errors in detail
                 const text = await redditRes.text();
-                request.log.error("Reddit API error: " + text);
+                request.log.error({
+                    status: redditRes.status,
+                    statusText: redditRes.statusText,
+                    headers: Object.fromEntries(redditRes.headers.entries()),
+                    body: text,
+                });
                 return reply.status(500).send({ ok: false });
             }
 
-            const dataRes = await redditRes.json();
+            // Parsing JSON
+            let dataRes = [];
+            try {
+                dataRes = await redditRes.json();
+            } catch (jsonError) {
+                request.log.error("Reddit JSON parse error: " + jsonError.message);
+                return reply.send({ ok: true, flairs: [] });
+            }
 
-            const flairs = dataRes.map((child) => ({
-                id: child.id,
-                name: child.text,
-            }));
+            const flairs = Array.isArray(dataRes)
+                ? dataRes.map((child) => ({
+                    id: child.id,
+                    name: child.text,
+                }))
+                : [];
 
             return reply.send({ ok: true, flairs });
 

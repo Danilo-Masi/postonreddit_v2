@@ -7,14 +7,14 @@ import Legend from "./Legend";
 
 export default function ResultContainer() {
   const isMobile = useIsMobile();
-  const { subredditsSelected } = useAppContext();
+  const { subredditTargets } = useAppContext();
 
   return (
     <div className="w-full md:w-[calc(65%-10px)] h-full flex flex-col gap-5">
       {isMobile && <ProgressBar />}
       <div className="w-full h-full flex flex-col items-start justify-start overflow-scroll gap-18 md:gap-10">
-        {subredditsSelected.map((sub) => (
-          <MomentSelect sub={sub.name} key={sub.id} />
+        {subredditTargets.map((sub) => (
+          <MomentSelect sub={sub.subreddit} key={sub.subreddit} />
         ))}
         <Legend />
       </div>

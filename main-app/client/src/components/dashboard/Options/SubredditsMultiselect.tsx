@@ -15,50 +15,55 @@ export default function SubredditMultiselect() {
     const [open, setOpen] = useState(false)
     const [search, setSearch] = useState("")
     const [results, setResults] = useState<Subreddit[]>([])
-    const [values, setValues] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
-    const { subredditsSelected, setSubredditsSelected } = useAppContext()
+    const { subredditTargets, setSubredditTargets } = useAppContext()
 
-    // Fetch with debounce
+    // Fetch subreddits con debounce
     useEffect(() => {
         if (search.length < 2) {
             setResults([])
             return
         }
-
         const timeout = setTimeout(async () => {
             setLoading(true)
             const res = await getSubreddits(search)
             if (res.ok) setResults(res.subreddits)
             setLoading(false)
-        }, 350);
-
+        }, 350)
         return () => clearTimeout(timeout)
     }, [search])
 
-    // Selezione multipla dei valori
+    // Toggle selezione subreddit
     const toggleValue = (name: string) => {
-        setValues((prev) => {
-            const updated = prev.includes(name)
-                ? prev.filter((v) => v !== name)
-                : [...prev, name]
-
-            setSubredditsSelected(updated)
-            return updated
-        });
+        setSubredditTargets((prev) => {
+            // Controlla se la subreddit è già selezionata
+            const exists = prev.find((t) => t.subreddit === name)
+            if (exists) {
+                return prev.filter((t) => t.subreddit !== name)
+            }
+            // Aggiunge nuova subreddit con valori null
+            return [
+                ...prev,
+                {
+                    subreddit: name,
+                    flairId: null,
+                    flairName: null,
+                    scheduledAt: null,
+                },
+            ]
+        })
     }
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
-
             <PopoverTrigger asChild>
                 <Button
                     role="combobox"
                     aria-expanded={open}
                     className="w-full h-fit justify-between bg-zinc-800 border border-zinc-700">
-                    {values.length === 0
+                    {subredditTargets.length === 0
                         ? "Select subreddits..."
-                        : `${subredditsSelected.length} selected`}
+                        : `${subredditTargets.length} selected`}
                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -69,21 +74,20 @@ export default function SubredditMultiselect() {
                         placeholder="Search subreddits..."
                         value={search}
                         onValueChange={setSearch} />
-
                     <CommandList>
                         {loading && (
                             <div className="p-3 text-sm text-zinc-400">
                                 Searching subreddits...
                             </div>
                         )}
-
                         {!loading && results.length === 0 && (
                             <CommandEmpty>No subreddits found.</CommandEmpty>
                         )}
-
                         <CommandGroup>
                             {results.map((sub) => {
-                                const selected = values.includes(sub.name)
+                                const selected = subredditTargets.some(
+                                    (t) => t.subreddit === sub.name
+                                )
                                 return (
                                     <CommandItem
                                         key={sub.name}
