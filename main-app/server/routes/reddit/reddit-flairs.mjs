@@ -57,7 +57,7 @@ export default async function redditFlairsRoute(fastify, opts) {
             if (!redditRes.ok) {
                 // 403 and 404 are common for private or non-existent subreddits
                 if (redditRes.status === 403 || redditRes.status === 404) {
-                    request.log.warn(`Reddit subreddit ${q} flairs not accessinle (status: ${redditRes.status})`);
+                    request.log.warn(`Reddit subreddit ${q} flairs not accesible (status: ${redditRes.status})`);
                     return reply.status(200).send({ ok: true, flairs: [] });
                 }
                 // Log other errors in detail

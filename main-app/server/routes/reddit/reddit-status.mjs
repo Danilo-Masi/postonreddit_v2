@@ -1,4 +1,4 @@
-import { supabase } from "../../config/supabase.mjs";
+import { supabaseAdmin } from "../../config/supabase.mjs";
 import { getAuthenticatedUser } from "../../services/auth.service.mjs";
 import { redditRefresh } from "../../services/reddit.service.mjs";
 
@@ -12,7 +12,7 @@ export default async function redditStatusRoute(fastify, opts) {
             const userId = validatedUser.id;
 
             // Get the tokens from Supabase
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from("reddit_tokens")
                 .select("access_token, refresh_token, token_expiry")
                 .eq("user_id", userId)

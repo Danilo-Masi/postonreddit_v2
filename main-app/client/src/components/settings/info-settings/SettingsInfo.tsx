@@ -2,10 +2,9 @@ import { LinkRow, SettingsCard } from "../SettingsUtility";
 
 const withUTM = (url: string, content: string) => {
     const u = new URL(url);
-    u.searchParams.set("utm_source", "app");
-    u.searchParams.set("utm_medium", "settings");
-    u.searchParams.set("utm_campaign", "app_info");
-    u.searchParams.set("utm_content", content);
+    u.searchParams.set("utm_source", content);
+    u.searchParams.set("utm_medium", content);
+    u.searchParams.set("utm_campaign", content);
     return u.toString();
 };
 
@@ -23,10 +22,6 @@ export default function SettingsInfo() {
             <LinkRow
                 label="Terms of use"
                 href={withUTM("https://postonreddit.com/terms", "terms")}
-            />
-            <LinkRow
-                label="Rate this app"
-                href={withUTM("https://example.com/review", "rate_app")}
             />
             <LinkRow
                 label="Send feedback"

@@ -8,6 +8,11 @@ type SubredditTarget = {
 };
 
 type AppContextType = {
+    // User info
+    userName: string;
+    setUserName: Dispatch<SetStateAction<string>>;
+    userEmail: string;
+    setUserEmail: Dispatch<SetStateAction<string>>;
     // Responsive
     dashboardSectionMobile: number;
     setDashboardSectionMobile: Dispatch<SetStateAction<number>>;
@@ -20,10 +25,6 @@ type AppContextType = {
     setContentPost: Dispatch<SetStateAction<string>>;
     subredditTargets: SubredditTarget[];
     setSubredditTargets: Dispatch<SetStateAction<SubredditTarget[]>>;
-    //subredditsSelected: string[];
-    //setSubredditsSelected: Dispatch<SetStateAction<string[]>>;
-    //flairsSelected: string[];
-    //setFlairsSelected: Dispatch<SetStateAction<string[]>>;
     // App settings
     isRedditButtonActive: boolean;
     setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
@@ -41,6 +42,9 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+    // User info
+    const [userName, setUserName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
     // Responsive
     const [dashboardSectionMobile, setDashboardSectionMobile] = useState(1);
     const [dashboardSectionDesktop, setDashboardSectionDesktop] = useState(1);
@@ -48,8 +52,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [titlePost, setTitlePost] = useState("");
     const [contentPost, setContentPost] = useState("");
     const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
-    //const [subredditsSelected, setSubredditsSelected] = useState<string[]>([]);
-    //const [flairsSelected, setFlairsSelected] = useState<string[]>([]);
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
     const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
@@ -61,6 +63,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return (
         <AppContext.Provider
             value={{
+                // User info
+                userName,
+                setUserName,
+                userEmail,
+                setUserEmail,
                 // Responsive
                 dashboardSectionMobile,
                 setDashboardSectionMobile,
@@ -73,10 +80,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setContentPost,
                 subredditTargets,
                 setSubredditTargets,
-                //subredditsSelected,
-                //setSubredditsSelected,
-                //flairsSelected,
-                //setFlairsSelected,
                 // App settings
                 isRedditButtonActive,
                 setRedditButtonActive,

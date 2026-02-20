@@ -8,6 +8,7 @@ import { Spinner } from "../ui/spinner.tsx";
 import { useAuth } from "@/context/AuthContext.tsx";
 import { loginSchema } from "@/lib/validate.ts";
 import InputBox from "../ui/input-box.tsx";
+import { useAppContext } from "@/context/AppContext.tsx";
 
 export default function LoginOuth() {
     const [email, setEmail] = useState("");
@@ -17,7 +18,8 @@ export default function LoginOuth() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const { setPending, setActive } = useAuth();
+    const { setUserName, setUserEmail } = useAppContext();
+    const { setPending, setActive, } = useAuth();
 
     const handleLogin = async () => {
         setError("");
@@ -39,8 +41,10 @@ export default function LoginOuth() {
                 setLoading(false);
                 return;
             }
-            // 2-Salvataggio utente in context
+            // 2-Salvataggio utente ed info utente in context
             setPending();
+            setUserName(result.user.email.split("@")[0]);
+            setUserEmail(result.user.email);
             // 3-Redirect alla pagina corretta
             if (result.hasActivePlan) {
                 setActive();

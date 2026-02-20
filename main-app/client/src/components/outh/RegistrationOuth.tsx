@@ -9,6 +9,7 @@ import { registrationFunction } from "@/api/auth/registration";
 import { Spinner } from "../ui/spinner";
 import { checkoutSession } from "@/api/billing/checkout-session";
 import InputBox from "../ui/input-box";
+import { useAppContext } from "@/context/AppContext";
 
 export default function RegistrationOuth({ plan }: { plan: string | null }) {
     const [name, setName] = useState("");
@@ -17,6 +18,7 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
     const [isPasswordVisible, setPasswordVisible] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const { setUserName, setUserEmail } = useAppContext();
 
     const navigate = useNavigate();
     const { setPending } = useAuth();
@@ -47,8 +49,10 @@ export default function RegistrationOuth({ plan }: { plan: string | null }) {
                 setLoading(false);
                 return;
             }
-            // 2-Salvataggio utente in context
+            // 2-Salvataggio utente e informazioni in context
             setPending();
+            setUserName(result.user.email.split("@")[0]);
+            setUserEmail(result.user.email);
             // 3-Se non c'è un piano scelto, reindirizzo a /plans
             if (!plan || !["monthly", "lifetime"].includes(plan)) {
                 alert("Registration successful!"); // DEBUG ALERT
