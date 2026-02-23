@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { SquareCheckBig } from "lucide-react";
 
-export default function ButtonSchedule() {
+export default function ButtonSchedule({ handleSchedule }: { handleSchedule: () => void }) {
     return (
         <Button
+            onClick={handleSchedule}
             className="w-full text-sm p-6 md:p-3 bg-orange-600 hover:bg-orange-600/90 cursor-pointer">
             Schedule
             <SquareCheckBig />

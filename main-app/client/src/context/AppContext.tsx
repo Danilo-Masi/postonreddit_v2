@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { type Content } from "@tiptap/react";
 
 type SubredditTarget = {
     subreddit: string;
@@ -21,8 +22,8 @@ type AppContextType = {
     // Post options
     titlePost: string;
     setTitlePost: Dispatch<SetStateAction<string>>;
-    contentPost: string;
-    setContentPost: Dispatch<SetStateAction<string>>;
+    contentPost: Content;
+    setContentPost: Dispatch<SetStateAction<Content>>;
     subredditTargets: SubredditTarget[];
     setSubredditTargets: Dispatch<SetStateAction<SubredditTarget[]>>;
     // App settings
@@ -50,7 +51,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [dashboardSectionDesktop, setDashboardSectionDesktop] = useState(1);
     // Post options
     const [titlePost, setTitlePost] = useState("");
-    const [contentPost, setContentPost] = useState("");
+    const [contentPost, setContentPost] = useState<Content>("");
     const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
