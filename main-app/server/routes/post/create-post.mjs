@@ -44,7 +44,7 @@ export default async function createPostRoute(fastify) {
                     post_id: postId,
                     subreddit: t.subreddit,
                     flair: t.flairId ?? null,
-                    scheduledAt: t.scheduledAt,
+                    scheduled_at: t.scheduledAt,
                     status: "pending",
                 };
             });

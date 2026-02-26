@@ -3,14 +3,20 @@ import { Button } from "../ui/button"
 import { Ban, SquarePen } from "lucide-react"
 import type { Dispatch, SetStateAction } from "react"
 
-export default function PostTemplate({ title, content, setAlertDeleteOpen }: { title: string, content: string, setAlertDeleteOpen: Dispatch<SetStateAction<boolean>> }) {
+export default function PostTemplate({ title, content, postTargets, setAlertDeleteOpen }: { title: string, content: string, postTargets: Array<{ subreddit: string }>, setAlertDeleteOpen: Dispatch<SetStateAction<boolean>> }) {
     return (
         <Card className="w-full md:w-[calc(33%-5px)] h-fit bg-zinc-800 border-zinc-700">
             <CardHeader>
-                <CardTitle className="text-zinc-50">{title}</CardTitle>
-                <CardDescription className="text-zinc-400">Scheduled for 02/12/2025</CardDescription>
+                <CardTitle className="text-zinc-50 text-xl font-bold">{title}</CardTitle>
+                <div className="flex flex-wrap gap-3 mt-1">
+                    {postTargets.length > 0 && postTargets.map((target, index) => (
+                        <CardDescription key={index} className="bg-zinc-600 w-min px-3 py-1 text-zinc-100 text-sm rounded-md">
+                            {target.subreddit}
+                        </CardDescription>
+                    ))}
+                </div>
             </CardHeader>
-            <CardContent className="text-zinc-200">
+            <CardContent className="text-zinc-300 text-sm font-light">
                 {content}
             </CardContent>
             <CardFooter className="flex justify-end gap-3">

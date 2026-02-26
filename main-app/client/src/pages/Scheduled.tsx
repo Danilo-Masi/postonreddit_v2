@@ -2,31 +2,46 @@ import PeriodSelect from "@/components/scheduled/PeriodSelect";
 import Layout from "../components/layout/Layout";
 import PostTemplate from "@/components/scheduled/PostTemplate";
 import EmptyContainer from "@/components/scheduled/EmptyContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlertDeletePost from "@/components/scheduled/AlertDeletePost";
+import { postsListFunction } from "@/api/post/posts-list";
 
 type postType = {
+  id: string;
   title: string;
   content: string;
+  post_targets: { subreddit: string }[];
 };
-
-const posts: postType[] = [
-  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
-  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
-  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
-  { title: "lorem ipsum amamaet", content: "Praesent in accumsan enim. Sed pulvinar ante non tortor tincidunt auctor. Vestibulum nisi massa, commodo sed tempor non, consequat quis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam varius ultricies orci quis mattis. Nam vulputate sagittis tempus. Integer aliquam dui non nulla egestas." },
-];
 
 export default function Scheduled() {
   const [isAlertDeleteOpen, setAlertDeleteOpen] = useState(false);
+  const [postsList, setPostsList] = useState<postType[]>([]);
+
+  useEffect(() => {
+    async function loadPosts() {
+      const res = await postsListFunction("today");
+      console.log("Posts list response: ", res); // DEBUG LOG
+      if (res.ok) {
+        setPostsList(res.posts);
+      }
+    }
+
+    loadPosts();
+  }, []);
 
   return (
     <Layout>
       <PeriodSelect />
       <div className="w-full h-auto min-h-full flex flex-wrap gap-3 mt-5">
-        {posts.length > 0 ? (
-          posts.map((post) => (
-            <PostTemplate title={post.title} content={post.content} key={post.title} setAlertDeleteOpen={setAlertDeleteOpen} />
+        {postsList ? (
+          postsList.map((post) => (
+            <PostTemplate
+              key={post.id}
+              title={post.title}
+              content={post.content}
+              postTargets={post.post_targets}
+              setAlertDeleteOpen={setAlertDeleteOpen}
+            />
           ))
         ) : (
           <EmptyContainer />
