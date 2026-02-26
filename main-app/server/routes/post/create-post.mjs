@@ -4,37 +4,66 @@ import { getAuthenticatedUser } from "../../services/auth.service.mjs";
 export default async function createPostRoute(fastify) {
 
     fastify.post("/create-post", async (request, reply) => {
-        // Validate query
-        const { title, content, subreddit, flair, scheduledAt } = request.body;
-        console.log("Received payload:", { title, content, subreddit, flair, scheduledAt }); // DEBUG LOG
-        if (!title || !content || !subreddit || !flair || !scheduledAt) {
-            return reply.status(400).send({ ok: false, error: "Missing required fields" });
+        try {
+            const { title, content, subredditTargets } = request.body;
+
+            if (!title || !content || !Array.isArray(subredditTargets) || subredditTargets.length === 0) {
+                return reply.status(400).send({ ok: false, error: "Missing required fields" });
+            }
+
+            const user_token = request.cookies.access_token;
+            if (!user_token) {
+                return reply.status(401).send({ ok: false, error: "Unauthorized" });
+            }
+
+            const validatedUser = await getAuthenticatedUser(user_token);
+            if (!validatedUser) {
+                return reply.status(401).send({ ok: false, error: "Invalid session" });
+            }
+
+            const { data: postData, error: postError } = await supabase
+                .from("posts_test")
+                .insert({
+                    user_id: validatedUser.id,
+                    title,
+                    content,
+                })
+                .select()
+                .single();
+
+            if (postError) throw postError;
+
+            const postId = postData.id;
+
+            const targetsToInsert = subredditTargets.map((t) => {
+                if (!t.subreddit || !t.scheduledAt) {
+                    throw new Error("Invalid subreddit target structure");
+                }
+
+                return {
+                    post_id: postId,
+                    subreddit: t.subreddit,
+                    flair: t.flairId ?? null,
+                    scheduledAt: t.scheduledAt,
+                    status: "pending",
+                };
+            });
+
+            const { error: targetsError } = await supabase
+                .from("post_targets")
+                .insert(targetsToInsert);
+
+            if (targetsError) {
+                // rollback manuale
+                await supabase.from("posts_test").delete().eq("id", postId);
+                throw targetsError;
+            }
+
+            return reply.status(201).send({ ok: true });
+
+        } catch (err) {
+            request.log.error({ err }, "Create post error");
+            return reply.status(500).send({ ok: false });
         }
-
-        // Validate user
-        const user_token = request.cookies.access_token;
-        const validatedUser = await getAuthenticatedUser(user_token);
-        const userId = validatedUser.id;
-
-        // Create post
-        const { data, error } = await supabase
-            .from('posts_test')
-            .insert([
-                { title: title },
-                { content: content },
-            ])
-            .eq("user_id", userId)
-            .select()
-            .single();
-
-        if (error) {
-            console.error("Error creating post:", error);
-            return reply.status(500).send({ ok: false, error: "Error creating post" });
-        }
-
-        console.log("Post created successfully:", data); // DEBUG LOG
-
-        return reply.status(200).send({ ok: true, post: data });
     });
-
 }
