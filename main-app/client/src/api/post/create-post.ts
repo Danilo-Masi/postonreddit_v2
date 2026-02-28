@@ -4,16 +4,16 @@ export async function createPostFunction() {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            title: "Test post 2 from client",
-            content: "This is a test post 2 created from the client",
+            title: "Morbi in posuere augue, quis gravida augue. Proin vestibulum mi in magna ultrices, a ultricies turpis malesuada. Donec euismod consectetur.",
+            content: "Morbi auctor, nulla vitae pretium tincidunt, neque ipsum sodales justo, id lobortis ante massa et sapien. Mauris egestas vehicula risus, vel venenatis ex dictum ut. Curabitur at faucibus lacus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin at urna dui. Duis interdum sapien at faucibus tincidunt. Duis sit amet cursus ipsum, eget lobortis neque. Proin mattis hendrerit nunc, et ornare magna auctor et. Suspendisse eget euismod libero, euismod aliquet ipsum.",
             subredditTargets: [
                 {
-                    subreddit: "testsubreddit",
+                    subreddit: "loremipsum",
                     flairId: "123456",
                     scheduledAt: new Date(Date.now() + 60000).toISOString(),
                 },
                 {
-                    subreddit: "testsubreddit2",
+                    subreddit: "loremipsum2",
                     flairId: "123456222",
                     scheduledAt: new Date(Date.now() + 60000).toISOString(),
                 },

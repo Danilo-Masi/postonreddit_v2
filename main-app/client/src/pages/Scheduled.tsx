@@ -10,7 +10,7 @@ type postType = {
   id: string;
   title: string;
   content: string;
-  post_targets: { subreddit: string }[];
+  post_targets: { subreddit: string, scheduled_at: string }[];
 };
 
 export default function Scheduled() {
@@ -29,6 +29,10 @@ export default function Scheduled() {
     loadPosts();
   }, []);
 
+  /*const handleEditPost = (postId: string) => {
+    alert(`Edit post with ID: ${postId}`);
+  }*/
+
   return (
     <Layout>
       <PeriodSelect />
@@ -37,10 +41,12 @@ export default function Scheduled() {
           postsList.map((post) => (
             <PostTemplate
               key={post.id}
+              post_id={post.id}
               title={post.title}
               content={post.content}
               postTargets={post.post_targets}
               setAlertDeleteOpen={setAlertDeleteOpen}
+              //handleEditPost={handleEditPost(post.id)}
             />
           ))
         ) : (
