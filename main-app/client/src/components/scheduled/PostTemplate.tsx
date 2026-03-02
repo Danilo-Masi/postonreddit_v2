@@ -1,9 +1,36 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "../ui/button"
 import { Ban, SquarePen } from "lucide-react"
-import type { Dispatch, SetStateAction } from "react"
+import { useState, type Dispatch, type SetStateAction } from "react"
+import { useAppContext } from "@/context/AppContext";
+import { Spinner } from "../ui/spinner";
 
-export default function PostTemplate({ post_id, title, content, postTargets, setAlertDeleteOpen }: { post_id: string, title: string, content: string, postTargets: Array<{ subreddit: string, scheduled_at: string }>, setAlertDeleteOpen: Dispatch<SetStateAction<boolean>>, }) {
+interface PostTargetsInterface {
+    subreddit: string;
+    scheduled_at: string;
+}
+
+interface PostTemplateInterface {
+    post_id: string;
+    title: string;
+    content: string;
+    postTargets: PostTargetsInterface[];
+    setAlertDeleteOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function PostTemplate({ post_id, title, content, postTargets, setAlertDeleteOpen }: PostTemplateInterface) {
+    const { setPostIdSelected } = useAppContext();
+    const [isEditLoading, setEditLoading] = useState(false);
+
+    const handleEditPost = () => {
+        alert(post_id);
+    }
+
+    const handleDeletePost = () => {
+        setPostIdSelected(post_id);
+        setAlertDeleteOpen(true);
+    }
+
     return (
         <Card className="w-full md:w-[calc(33%-5px)] h-fit md:max-h-[60svh] md:overflow-hidden bg-zinc-800 border-zinc-700">
             <CardHeader>
@@ -23,13 +50,22 @@ export default function PostTemplate({ post_id, title, content, postTargets, set
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
                 <Button
-                    className="cursor-pointer">
-                    <SquarePen /> Edit
+                    disabled={isEditLoading}
+                    onClick={handleEditPost}
+                    className="cursor-pointer disabled:cursor-none">
+                    {isEditLoading
+                        ? (<>
+                            <Spinner /> Loading
+                        </>)
+                        : (<>
+                            <SquarePen /> Edit
+                        </>)
+                    }
                 </Button>
                 <Button
-                    className="cursor-pointer"
+                    onClick={handleDeletePost}
                     variant="destructive"
-                    onClick={() => setAlertDeleteOpen(true)}>
+                    className="cursor-pointer disabled:cursor-none">
                     <Ban />Delete
                 </Button>
             </CardFooter>

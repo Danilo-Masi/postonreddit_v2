@@ -29,10 +29,6 @@ export default function Scheduled() {
     loadPosts();
   }, []);
 
-  /*const handleEditPost = (postId: string) => {
-    alert(`Edit post with ID: ${postId}`);
-  }*/
-
   return (
     <Layout>
       <PeriodSelect />
@@ -46,7 +42,6 @@ export default function Scheduled() {
               content={post.content}
               postTargets={post.post_targets}
               setAlertDeleteOpen={setAlertDeleteOpen}
-              //handleEditPost={handleEditPost(post.id)}
             />
           ))
         ) : (

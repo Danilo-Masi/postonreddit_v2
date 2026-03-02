@@ -1,4 +1,4 @@
-import { supabase } from "../../config/supabase.mjs";
+import { supabaseAdmin } from "../../config/supabase.mjs";
 import { getAuthenticatedUser } from "../../services/auth.service.mjs";
 
 export default async function createPostRoute(fastify) {
@@ -6,7 +6,6 @@ export default async function createPostRoute(fastify) {
     fastify.post("/create-post", async (request, reply) => {
         try {
             const { title, content, subredditTargets } = request.body;
-
             if (!title || !content || !Array.isArray(subredditTargets) || subredditTargets.length === 0) {
                 return reply.status(400).send({ ok: false, error: "Missing required fields" });
             }
@@ -21,7 +20,7 @@ export default async function createPostRoute(fastify) {
                 return reply.status(401).send({ ok: false, error: "Invalid session" });
             }
 
-            const { data: postData, error: postError } = await supabase
+            const { data: postData, error: postError } = await supabaseAdmin
                 .from("posts_test")
                 .insert({
                     user_id: validatedUser.id,
@@ -31,17 +30,19 @@ export default async function createPostRoute(fastify) {
                 .select()
                 .single();
 
-            if (postError) throw postError;
-
-            const postId = postData.id;
+            if (postError) {
+                request.log.error({ postError }, "Supabase error in /create-post");
+                return reply.status(500).send({ ok: false, error: "Supabase error" })
+            }
 
             const targetsToInsert = subredditTargets.map((t) => {
                 if (!t.subreddit || !t.scheduledAt) {
-                    throw new Error("Invalid subreddit target structure");
+                    request.log.error("Invalid subreddit target structure in /create-post");
+                    return reply.status(501).send({ ok: false, error: "Invalid subreddit target structure" })
                 }
 
                 return {
-                    post_id: postId,
+                    post_id: postData.id,
                     subreddit: t.subreddit,
                     flair: t.flairId ?? null,
                     scheduled_at: t.scheduledAt,
@@ -49,21 +50,24 @@ export default async function createPostRoute(fastify) {
                 };
             });
 
-            const { error: targetsError } = await supabase
+            const { error: targetsError } = await supabaseAdmin
                 .from("post_targets")
                 .insert(targetsToInsert);
 
             if (targetsError) {
-                // rollback manuale
-                await supabase.from("posts_test").delete().eq("id", postId);
-                throw targetsError;
+                request.log.error("Supabase error inserting subreddit targtes in /create-post");
+                await supabaseAdmin
+                    .from("posts_test")
+                    .delete()
+                    .eq("id", postData.id);
+                return reply.status(500).send({ ok: false, error: "Subase error inserting subreddit targets" });
             }
 
-            return reply.status(201).send({ ok: true });
+            return reply.status(200).send({ ok: true });
 
         } catch (err) {
-            request.log.error({ err }, "Create post error");
-            return reply.status(500).send({ ok: false });
+            request.log.error({ err }, "Server unexepcted error in /create-post");
+            return reply.status(500).send({ ok: false, error: "Server unexpected error" });
         }
     });
 }

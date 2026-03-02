@@ -1,4 +1,7 @@
 export async function postsListFunction(filter = "today") {
+
+    // DA MODIFICARE CON I DATI REALI // TODO
+
     try {
         const res = await fetch(
             `http://127.0.0.1:3000/post/posts-list?filter=${filter}`,

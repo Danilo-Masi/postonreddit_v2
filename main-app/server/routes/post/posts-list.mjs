@@ -2,10 +2,10 @@ import { supabaseAdmin } from "../../config/supabase.mjs";
 import { getAuthenticatedUser } from "../../services/auth.service.mjs";
 
 export default async function postsListRoute(fastify) {
+
     fastify.get("/posts-list", async (request, reply) => {
         try {
             const user_token = request.cookies.access_token;
-
             if (!user_token) {
                 return reply.status(401).send({ ok: false, error: "Unauthorized" });
             }
@@ -43,6 +43,7 @@ export default async function postsListRoute(fastify) {
                     break;
 
                 default:
+                    request.log.error("Invalid filter in /posts-list");
                     return reply.status(400).send({ ok: false, error: "Invalid filter" });
             }
 
@@ -53,15 +54,10 @@ export default async function postsListRoute(fastify) {
                     title,
                     content,
                     post_targets (
-                        id,
-                        subreddit,
-                        flair,
-                        scheduled_at,
-                        status
+                        *
                     )
                 `)
                 .eq("user_id", validatedUser.id)
-                //.order("created_at", { ascending: false });
 
             if (startDate) {
                 query = query.gte("post_targets.scheduled_at", startDate.toISOString());
@@ -74,17 +70,15 @@ export default async function postsListRoute(fastify) {
             const { data, error } = await query;
 
             if (error) {
-                request.log.error({ error }, "Error fetching posts list");
-                return reply.status(500).send({ ok: false });
+                request.log.error({ error }, "Error fetching posts list in /posts-list");
+                return reply.status(500).send({ ok: false, error: "Error fetching posts list" });
             }
-
-            console.log("Supabase query result: ", { data }); // DEBUG LOG
 
             return reply.send({ ok: true, posts: data });
 
         } catch (err) {
-            request.log.error({ err }, "Posts list error");
-            return reply.status(500).send({ ok: false });
+            request.log.error({ err }, "Server unexepcted error in /posts-list");
+            return reply.status(500).send({ ok: false, error: "Server unexpected error" });
         }
     });
 }

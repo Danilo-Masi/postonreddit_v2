@@ -1,4 +1,7 @@
 export async function createPostFunction() {
+
+    // DA MODIFICA CON I DATI REALI // TODO
+
     const res = await fetch("http://127.0.0.1:3000/post/create-post", {
         method: "POST",
         credentials: "include",
@@ -24,7 +27,8 @@ export async function createPostFunction() {
     const data = await res.json();
 
     if (!res.ok) {
-        console.error("Create post error:", data.error);
+        console.error("Create post error: " + data.error);
+        return { ok: false, error: data.error };
     }
 
     return { ok: res.ok, error: data.error };

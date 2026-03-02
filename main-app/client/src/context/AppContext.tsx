@@ -26,6 +26,8 @@ type AppContextType = {
     setContentPost: Dispatch<SetStateAction<Content>>;
     subredditTargets: SubredditTarget[];
     setSubredditTargets: Dispatch<SetStateAction<SubredditTarget[]>>;
+    postIdSelected: string;
+    setPostIdSelected: Dispatch<SetStateAction<string>>;
     // App settings
     isRedditButtonActive: boolean;
     setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
@@ -53,6 +55,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [titlePost, setTitlePost] = useState("");
     const [contentPost, setContentPost] = useState<Content>("");
     const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
+    const [postIdSelected, setPostIdSelected] = useState("");
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
     const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
@@ -81,6 +84,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setContentPost,
                 subredditTargets,
                 setSubredditTargets,
+                postIdSelected,
+                setPostIdSelected,
                 // App settings
                 isRedditButtonActive,
                 setRedditButtonActive,
