@@ -8,6 +8,13 @@ type SubredditTarget = {
     scheduledAt: string | null;
 };
 
+type PostType = {
+    id: string;
+    title: string;
+    content: string;
+    targets: { subreddit: string, scheduled_at: string }[];
+};
+
 type AppContextType = {
     // User info
     userName: string;
@@ -26,6 +33,8 @@ type AppContextType = {
     setContentPost: Dispatch<SetStateAction<Content>>;
     subredditTargets: SubredditTarget[];
     setSubredditTargets: Dispatch<SetStateAction<SubredditTarget[]>>;
+    postsList: PostType[];
+    setPostsList: Dispatch<SetStateAction<PostType[]>>;
     postIdSelected: string;
     setPostIdSelected: Dispatch<SetStateAction<string>>;
     // App settings
@@ -55,6 +64,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [titlePost, setTitlePost] = useState("");
     const [contentPost, setContentPost] = useState<Content>("");
     const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
+    const [postsList, setPostsList] = useState<PostType[]>([]);
     const [postIdSelected, setPostIdSelected] = useState("");
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
@@ -84,6 +94,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setContentPost,
                 subredditTargets,
                 setSubredditTargets,
+                postsList,
+                setPostsList,
                 postIdSelected,
                 setPostIdSelected,
                 // App settings

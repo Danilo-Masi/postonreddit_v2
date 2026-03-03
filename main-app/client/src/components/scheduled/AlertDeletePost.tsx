@@ -12,7 +12,7 @@ interface AlertDeletePostInterface {
 
 export default function AlertDeletePost({ isAlertDeleteOpen, setAlertDeleteOpen }: AlertDeletePostInterface) {
     const [isLoading, setLoading] = useState(false);
-    const { postIdSelected } = useAppContext();
+    const { postIdSelected, postsList, setPostsList } = useAppContext();
 
     const handleDeletePost = async () => {
         setLoading(true);
@@ -22,6 +22,7 @@ export default function AlertDeletePost({ isAlertDeleteOpen, setAlertDeleteOpen 
                 toast.error("Server error. Please try again later.");
                 console.error("Response error: " + res.error);
             }
+            setPostsList(postsList.filter(post => post.id !== postIdSelected));
             toast.success("Post deleted successfully!");
         } catch (error) {
             toast.error("Server error. Please try again later.");

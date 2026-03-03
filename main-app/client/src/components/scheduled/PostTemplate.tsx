@@ -38,7 +38,7 @@ export default function PostTemplate({ post_id, title, content, postTargets, set
                     {title.length > 50 ? title.slice(0, 50) + "..." : title}
                 </CardTitle>
                 <div className="flex flex-wrap gap-3 mt-1">
-                    {postTargets.length > 0 && postTargets.map((target, index) => (
+                    {postTargets.map((target, index) => (
                         <CardDescription key={index} className="bg-zinc-600 w-fit px-3 py-1 text-zinc-100 text-sm rounded-md">
                             {target.subreddit} : {new Date(target.scheduled_at).toLocaleString()}
                         </CardDescription>

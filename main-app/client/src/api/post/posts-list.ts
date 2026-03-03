@@ -1,26 +1,22 @@
-export async function postsListFunction(filter = "today") {
-
-    // DA MODIFICARE CON I DATI REALI // TODO
-
+export async function postsListFunction(filter: string = "today") {
     try {
-        const res = await fetch(
-            `http://127.0.0.1:3000/post/posts-list?filter=${filter}`,
+        // We pass the filter as query parameter (?filter=today|week|month|all)
+        const res = await fetch(`http://127.0.0.1:3000/post/posts-list?filter=${filter}`,
             {
                 method: "GET",
                 credentials: "include",
             }
         );
 
-        if (res.status === 401) {
-            return {
-                ok: false,
-                posts: [],
-                error: "Unauthorized",
-            };
-        }
+        // Parse JSON response body
+        // Even if response is an error (e.g. 400 or 500),
+        // backend may still return a JSON body
+        const data = await res.json();
 
+        // Handle HTTP-level errors
+        // res.ok is false if status is not in 200–299 range
         if (!res.ok) {
-            console.error("Error in postsListFunction:", res.status);
+            console.error("Failed to fetch posts in postsListFunction: ", data.error);
             return {
                 ok: false,
                 posts: [],
@@ -28,15 +24,16 @@ export async function postsListFunction(filter = "today") {
             };
         }
 
-        const data = await res.json();
-
+        // Successful response
+        // We return posts from backend
+        // Defensive fallback: ensure posts is always an array
         return {
             ok: true,
-            posts: data.posts ?? [],
+            posts: data.posts || [],
         };
 
     } catch (err) {
-        console.error("postsListFunction network error:", err);
+        console.error("Network error in postsListFunction:", err);
         return {
             ok: false,
             posts: [],
