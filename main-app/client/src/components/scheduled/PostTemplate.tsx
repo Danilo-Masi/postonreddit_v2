@@ -4,6 +4,7 @@ import { Ban, SquarePen } from "lucide-react"
 import { useState, type Dispatch, type SetStateAction } from "react"
 import { useAppContext } from "@/context/AppContext";
 import { Spinner } from "../ui/spinner";
+import { useNavigate } from "react-router-dom";
 
 interface PostTargetsInterface {
     subreddit: string;
@@ -19,16 +20,39 @@ interface PostTemplateInterface {
 }
 
 export default function PostTemplate({ post_id, title, content, postTargets, setAlertDeleteOpen }: PostTemplateInterface) {
-    const { setPostIdSelected } = useAppContext();
+    const navigate = useNavigate();
+    const { setPostIdSelected, postsList, setTitlePost, setContentPost, setSubredditTargets } = useAppContext();
     const [isEditLoading, setEditLoading] = useState(false);
 
     const handleEditPost = () => {
-        alert(post_id);
-    }
+        setEditLoading(true);
+        const post = postsList.find((item) => item.id === post_id);
+        if (!post) return;
+        setTitlePost(post.title);
+        setContentPost(post.content);
+        setSubredditTargets((post.targets ?? []).map((target) => ({
+            subreddit: target.subreddit,
+            scheduledAt: target.scheduled_at,
+            flairId: '',
+            flairName: ''
+        })));
+        setEditLoading(false);
+        navigate("/", { replace: true });
+    };
 
     const handleDeletePost = () => {
         setPostIdSelected(post_id);
         setAlertDeleteOpen(true);
+    }
+
+    function formatDate(dateString: string) {
+        return new Date(dateString).toLocaleString("en-EN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
     }
 
     return (
@@ -40,7 +64,7 @@ export default function PostTemplate({ post_id, title, content, postTargets, set
                 <div className="flex flex-wrap gap-3 mt-1">
                     {postTargets.map((target, index) => (
                         <CardDescription key={index} className="bg-zinc-600 w-fit px-3 py-1 text-zinc-100 text-sm rounded-md">
-                            {target.subreddit} : {new Date(target.scheduled_at).toLocaleString()}
+                            {target.subreddit} : {formatDate(target.scheduled_at)}
                         </CardDescription>
                     ))}
                 </div>

@@ -15,6 +15,15 @@ type PostType = {
     targets: { subreddit: string, scheduled_at: string }[];
 };
 
+type CachedPosts = {
+    data: PostType[];
+    timestamp: number;
+}
+
+type PostsCache = {
+    [key: string]: CachedPosts;
+}
+
 type AppContextType = {
     // User info
     userName: string;
@@ -37,6 +46,9 @@ type AppContextType = {
     setPostsList: Dispatch<SetStateAction<PostType[]>>;
     postIdSelected: string;
     setPostIdSelected: Dispatch<SetStateAction<string>>;
+    // Cache
+    postsCache: PostsCache;
+    setPostsCache: Dispatch<SetStateAction<PostsCache>>;
     // App settings
     isRedditButtonActive: boolean;
     setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
@@ -66,6 +78,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [subredditTargets, setSubredditTargets] = useState<SubredditTarget[]>([]);
     const [postsList, setPostsList] = useState<PostType[]>([]);
     const [postIdSelected, setPostIdSelected] = useState("");
+    // Cache
+    const [postsCache, setPostsCache] = useState<PostsCache>({});
     // App settings
     const [isRedditButtonActive, setRedditButtonActive] = useState(false);
     const [isDismissPermissionDialogOpen, setDismissPermissionDialogOpen] = useState(false);
@@ -98,6 +112,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 setPostsList,
                 postIdSelected,
                 setPostIdSelected,
+                //Cache
+                postsCache,
+                setPostsCache,
                 // App settings
                 isRedditButtonActive,
                 setRedditButtonActive,

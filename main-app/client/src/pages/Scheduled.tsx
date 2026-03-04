@@ -9,18 +9,34 @@ import { PostSkeleton } from "@/components/scheduled/PostSkeleton";
 import { EmptyContainer } from "@/components/scheduled/EmptyContainer";
 import { useAppContext } from "@/context/AppContext";
 
-
-
 export default function Scheduled() {
-  const [isLoadingPosts, setLoadingPosts] = useState(false);
-  const { postsList, setPostsList } = useAppContext();
+  const { postsCache, setPostsCache } = useAppContext();
+
   const [periodValue, setPeriodValue] = useState("today");
+  const [isLoadingPosts, setLoadingPosts] = useState(false);
   const [isAlertDeleteOpen, setAlertDeleteOpen] = useState(false);
+
+  const CACHE_TTL = 5 * 60 * 1000;
+
+  // 👇 Prendiamo i post dalla cache
+  const postsList = postsCache[periodValue]?.data || [];
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadPosts() {
+      const cached = postsCache[periodValue];
+
+      // 🔎 Se esiste cache e NON è scaduta → non fare nulla
+      if (cached) {
+        const isExpired = Date.now() - cached.timestamp > CACHE_TTL;
+
+        if (!isExpired) {
+          return;
+        }
+      }
+
+      // 🚀 Fetch solo se necessario
       setLoadingPosts(true);
 
       try {
@@ -29,15 +45,20 @@ export default function Scheduled() {
         if (!isMounted) return;
 
         if (res.ok) {
-          setPostsList(res.posts);
+          setPostsCache(prev => ({
+            ...prev,
+            [periodValue]: {
+              data: res.posts,
+              timestamp: Date.now(),
+            },
+          }));
         } else {
           toast.warning(res.error);
-          setPostsList([]);
         }
+
       } catch (error) {
         toast.warning("Some error occurred. Please try again later.");
-        console.error("Client error occurred: ", error);
-        setPostsList([]);
+        console.error("Client error occurred:", error);
       } finally {
         if (isMounted) setLoadingPosts(false);
       }
@@ -48,14 +69,14 @@ export default function Scheduled() {
     return () => {
       isMounted = false;
     };
-  }, [periodValue]);
+  }, [periodValue, postsCache, setPostsCache]);
 
   return (
     <Layout>
-
       <PeriodSelect
         periodValue={periodValue}
-        setPeriodValue={setPeriodValue} />
+        setPeriodValue={setPeriodValue}
+      />
 
       <div className="w-full h-auto min-h-full flex flex-wrap gap-3 mt-5">
         {isLoadingPosts ? (
@@ -64,7 +85,7 @@ export default function Scheduled() {
             <PostSkeleton />
             <PostSkeleton />
           </div>
-        ) : postsList.length > 0 && !isLoadingPosts ? (
+        ) : postsList.length > 0 ? (
           postsList.map((post) => (
             <PostTemplate
               key={post.id}
@@ -82,8 +103,8 @@ export default function Scheduled() {
 
       <AlertDeletePost
         isAlertDeleteOpen={isAlertDeleteOpen}
-        setAlertDeleteOpen={setAlertDeleteOpen} />
-
+        setAlertDeleteOpen={setAlertDeleteOpen}
+      />
     </Layout>
   );
 }
