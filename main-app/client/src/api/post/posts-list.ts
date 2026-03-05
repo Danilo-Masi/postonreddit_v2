@@ -1,6 +1,5 @@
 export async function postsListFunction(filter: string = "today") {
     try {
-        // We pass the filter as query parameter (?filter=today|week|month|all)
         const res = await fetch(`http://127.0.0.1:3000/post/posts-list?filter=${filter}`,
             {
                 method: "GET",
@@ -8,15 +7,10 @@ export async function postsListFunction(filter: string = "today") {
             }
         );
 
-        // Parse JSON response body
-        // Even if response is an error (e.g. 400 or 500),
-        // backend may still return a JSON body
         const data = await res.json();
 
-        // Handle HTTP-level errors
-        // res.ok is false if status is not in 200–299 range
         if (!res.ok) {
-            console.error("Failed to fetch posts in postsListFunction: ", data.error);
+            console.log("Response error in postsListFunction(): ", data.error); // DEBUG LOG
             return {
                 ok: false,
                 posts: [],
@@ -24,20 +18,17 @@ export async function postsListFunction(filter: string = "today") {
             };
         }
 
-        // Successful response
-        // We return posts from backend
-        // Defensive fallback: ensure posts is always an array
         return {
             ok: true,
             posts: data.posts || [],
         };
 
-    } catch (err) {
-        console.error("Network error in postsListFunction:", err);
+    } catch (error) {
+        console.log("Unexpected error in createPostFunction(): ", error); // DEBUG LOG
         return {
             ok: false,
             posts: [],
-            error: "Network error",
+            error: "Unexptected error"
         };
     }
 }

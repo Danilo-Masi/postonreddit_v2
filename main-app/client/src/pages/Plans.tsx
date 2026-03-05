@@ -2,6 +2,7 @@ import PlansGroup from "@/components/plans/PlansGroup";
 import { useNavigate } from "react-router-dom";
 import { checkoutSession } from "@/api/billing/checkout-session";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Plans() {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Plans() {
             setLoading(false);
             window.location.href = checkout.checkoutUrl;
         } catch (error) {
-            alert("Error during the checkout session. Plaease try again!");
+            toast.error("Error during the checkout session. Plaease try again!");
             setLoading(false);
             return;
         } finally {

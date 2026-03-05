@@ -1,10 +1,10 @@
 import { useIsMobile } from "@/lib/responsive";
 import { useAppContext } from "@/context/AppContext";
 import Layout from "../components/layout/Layout";
-import EditorContainer from "../components/dashboard/Editor/EditorContainer";
-import OptionsContainer from "../components/dashboard/Options/OptionsContainer";
-import ResultContainer from "@/components/dashboard/Result/ResultContainer";
-import ReviewContainer from "@/components/dashboard/Review/ReviewContainer";
+import Editor from "../components/dashboard/Editor/Editor";
+import Options from "../components/dashboard/Options/Options";
+import Result from "@/components/dashboard/Result/Result";
+import Review from "@/components/dashboard/Review/Review";
 
 export default function Dashboard() {
   const isMobile = useIsMobile();
@@ -13,26 +13,26 @@ export default function Dashboard() {
   const renderSectionMobile = () => {
     switch (dashboardSectionMobile) {
       case 1:
-        return <EditorContainer />
+        return <Editor />
       case 2:
-        return <OptionsContainer />
+        return <Options />
       case 3:
-        return <ResultContainer />
+        return <Result />
       case 4:
-        return <ReviewContainer />
+        return <Review />
       default:
-        return <EditorContainer />
+        return <Editor />
     }
   }
 
   const renderSectionDesktop = () => {
     switch (dashboardSectionDesktop) {
       case 1:
-        return (<><EditorContainer /><OptionsContainer /></>)
+        return (<><Editor /><Options /></>)
       case 2:
-        return (<><ResultContainer /><ReviewContainer /></>)
+        return (<><Result /><Review /></>)
       default:
-        return (<><EditorContainer /><OptionsContainer /></>)
+        return (<><Editor /><Options /></>)
     }
   }
 

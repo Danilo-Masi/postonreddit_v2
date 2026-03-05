@@ -13,13 +13,20 @@ export async function checkoutSession(plan: string) {
         const data = await res.json();
 
         if (!res.ok) {
-            console.error("Checkout session error:", data.error);
-            return { ok: false, error: data.error };
+            console.log("Response error in checkoutSessionFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                error: "Checkout session failed"
+            };
         }
 
         return { ok: true, checkoutUrl: data.checkoutUrl };
 
     } catch (error) {
-        return { ok: false, error: "Network error" };
+        console.log("Unexpected error in checkoutSessionFunction(): ", error); // DEBUG LOG
+        return {
+            ok: false,
+            error: "Unexptected error"
+        };
     }
 }

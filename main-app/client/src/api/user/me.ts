@@ -12,10 +12,11 @@ export async function meFunction() {
         }
 
         if (!res.ok) {
-            console.error("Error in meFunction: ", res.status);
+            console.log("Response error in meFunction(): ", res.text); // DEBUG LOG
             return {
                 logged: false,
                 paying: false,
+                error: "Fetching user info failed"
             };
         }
 
@@ -23,11 +24,12 @@ export async function meFunction() {
 
         return data;
 
-    } catch (err) {
-        console.error("meFunction network error:", err);
+    } catch (error) {
+        console.log("Unexpected error in meFunction(): ", error); // DEBUG LOG
         return {
             logged: false,
             paying: false,
+            error: "Unexptected error"
         }
     }
 }

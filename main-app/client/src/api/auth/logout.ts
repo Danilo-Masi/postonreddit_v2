@@ -8,13 +8,20 @@ export async function logoutFunction() {
         const data = await res.json();
 
         if (!res.ok) {
-            return { ok: false, error: data.error || "Logout failed" };
+            console.log("Response error in logoutFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                error: "Logout failed"
+            };
         }
 
         return { ok: true };
 
-    } catch (error: any) {
-        console.error("Network error: ", error);
-        return { ok: false, error: "Network error" };
+    } catch (error) {
+        console.log("Unexpected error in logoutFunction(): ", error); // DEBUG LOG
+        return {
+            ok: false,
+            error: "Unexptected error"
+        };
     }
 }

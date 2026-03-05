@@ -4,7 +4,7 @@ import TitleEditor from "./TitleEditor";
 import ContentEditor from "./ContentEditor";
 import ProgressBar from "../ProgressBar";
 
-export default function EditorContainer() {
+export default function Editor() {
   const isMobile = useIsMobile();
 
   return (

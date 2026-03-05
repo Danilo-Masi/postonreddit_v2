@@ -8,13 +8,22 @@ export async function redditStatus() {
         const data = await response.json();
 
         if (!response.ok || data.valid === false) {
-            console.error("Reddit authorization invalid: ", data);
-            return { ok: false, valid: false, error: data.message || "Invalid tokens" };
+            console.log("Response error in redditStatusFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                valid: false,
+                error: "Invalid Reddit status"
+            };
         }
 
         return { ok: true, valid: true };
+
     } catch (error) {
-        console.error("Network error during Reddit authorization: ", error);
-        return { ok: false, valid: false, error: "Network error" };
+        console.log("Unexpected error in redditStatusFunction(): ", error); // DEBUG LOG
+        return {
+            ok: false,
+            valid: false,
+            error: "Unexptected error"
+        };
     }
 }

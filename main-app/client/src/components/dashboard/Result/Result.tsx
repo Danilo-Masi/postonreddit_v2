@@ -5,7 +5,7 @@ import { useAppContext } from "@/context/AppContext";
 import MomentSelect from "./MomentSelect";
 import Legend from "./Legend";
 
-export default function ResultContainer() {
+export default function Result() {
   const isMobile = useIsMobile();
   const { subredditTargets } = useAppContext();
 

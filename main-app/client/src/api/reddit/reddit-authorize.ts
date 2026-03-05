@@ -10,13 +10,20 @@ export async function redditAuthorize() {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error("Reddit authorization error: ", data.error);
-            return { ok: false, error: data.error };
+            console.log("Response error in redditAuthorizeFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                error: "Authorization session failed"
+            };
         }
 
         return { ok: true, url: data.url };
+
     } catch (error) {
-        console.error("Network error during Reddit authorization: ", error);
-        return { ok: false, error: "Network error" };
+        console.log("Unexpected error in redditAuthorizeFunction(): ", error); // DEBUG LOG
+        return {
+            ok: false,
+            error: "Unexptected error"
+        };
     }
 }

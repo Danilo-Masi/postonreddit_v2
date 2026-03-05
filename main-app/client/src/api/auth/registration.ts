@@ -10,13 +10,20 @@ export async function registrationFunction(name: string, email: string, password
         const data = await res.json();
 
         if (!res.ok) {
-            return { ok: false, error: data.error || "Registration failed" };
+            console.log("Response error in registrationFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                error: "Registration failed"
+            };
         }
 
         return data;
 
-    } catch (error: any) {
-        console.error("Network error: ", error);
-        return { ok: false, error: "Network error" };
+    } catch (error) {
+        console.log("Unexpected error in cancelAccountFunction(): ", error); // DEBUG LOG
+        return {
+            ok: false,
+            error: "Unexptected error"
+        };
     }
 }   

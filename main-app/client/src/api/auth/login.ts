@@ -6,13 +6,14 @@ export async function loginFunction(email: string, password: string) {
             credentials: "include",
             body: JSON.stringify({ email, password }),
         });
-
+        
         const data = await res.json();
 
         if (!res.ok) {
+            console.log("Response error in loginFunction(): ", data.error); // DEBUG LOG
             return {
                 ok: false,
-                error: data.error,
+                error: "Login failed"
             };
         }
 
@@ -22,10 +23,11 @@ export async function loginFunction(email: string, password: string) {
             hasActivePlan: data.hasActivePlan,
         };
 
-    } catch (error: any) {
+    } catch (error) {
+        console.log("Unexpected error in loginFunction(): ", error); // DEBUG LOG
         return {
             ok: false,
-            error: error.message,
+            error: "Unexptected error"
         };
     }
 }

@@ -5,19 +5,28 @@ import ReviewTime from "./ReviewTime";
 import { useIsMobile } from "@/lib/responsive";
 import ProgressBar from "../ProgressBar";
 import { createPostFunction } from "@/api/post/create-post";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
-export default function ReviewContainer() {
+export default function Review() {
   const isMobile = useIsMobile();
-  const { titlePost, contentPost, subredditTargets } = useAppContext();
+  const navigate = useNavigate();
+  const { titlePost, setTitlePost, contentPost, setContentPost, subredditTargets, setSubredditTargets, setDashboardSectionMobile, setDashboardSectionDesktop, invalidatePostsCache } = useAppContext();
 
   const handleSchedule = async () => {
-    // Implement scheduling logic here
-    alert(`Title post: ${titlePost}\nContent post: ${contentPost}\nSubreddits: ${subredditTargets.map(sub => sub.subreddit).join(', ')}\nFLairs: ${subredditTargets.map(sub => sub.flairName).join(', ')}\nTimes: ${subredditTargets.map(sub => sub.scheduledAt).join(', ')}`);
     const res = await createPostFunction();
     if (res.ok) {
-      alert("Post created successfully!");
+      setTitlePost("");
+      setContentPost("");
+      setSubredditTargets([]);
+      setDashboardSectionDesktop(1);
+      setDashboardSectionMobile(1);
+      invalidatePostsCache();
+      toast.success("Post created successfully!");
+      navigate("/scheduled", { replace: true });
     } else {
-      alert(`Failed to create post: ${res.error}`);
+      console.log("Failed to create post: ", { res }); // DEBUG LOG
+      toast.error(`Failed to create post. Please try again`);
     }
   }
 

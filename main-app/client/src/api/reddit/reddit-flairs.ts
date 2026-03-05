@@ -1,6 +1,5 @@
 export async function getFlairs(query: string) {
     try {
-        // Query troppo corta
         if (!query || query.length < 2) {
             return { ok: true, flairs: [] };
         }
@@ -15,18 +14,24 @@ export async function getFlairs(query: string) {
 
         const data = await res.json();
 
-        // Se la fetch fallisce (es. 500), logga ma restituisci sempre un array vuoto
         if (!res.ok) {
-            console.error("Flairs fetch failed: ", data);
-            return { ok: false, flairs: [] };
+            console.log("Response error in getFlairFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                flairs: [],
+                error: "Flairs request failed"
+            };
         }
 
-        // Se l'endpoint ritorna flairs undefined o null, restituisci sempre un array
         const flairs = Array.isArray(data.flairs) ? data.flairs : [];
         return { ok: true, flairs };
 
     } catch (error) {
-        console.error("Network error during flairs search: ", error);
-        return { ok: false, flairs: [] };
+        console.log("Unexpected error in getFlairFunction():  ", error); // DEBUG LOG
+        return {
+            ok: false,
+            flairs: [],
+            error: "Unexptected error"
+        };
     }
 }

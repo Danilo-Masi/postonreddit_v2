@@ -12,14 +12,20 @@ export async function getSubreddits(query: string) {
         const data = await res.json();
 
         if (!res.ok) {
-            console.error("Subreddits fetch failed: ", data);
-            return { ok: false, error: "Failed to fetch subreddits" }
+            console.log("Response error in getSubredditFunction(): ", data.error); // DEBUG LOG
+            return {
+                ok: false,
+                error: "Failed to fetch subreddits"
+            }
         }
 
         return { ok: true, subreddits: data.subreddits }
 
     } catch (error) {
-        console.error("Network error during subreddits search: ", error);
-        return { ok: false, error: "Network error" };
+        console.log("Unexpected error in getSubredditFunction(): ", error); // DEBUG LOG
+        return {
+            ok: false,
+            error: "Unexptected error"
+        };
     }
 }

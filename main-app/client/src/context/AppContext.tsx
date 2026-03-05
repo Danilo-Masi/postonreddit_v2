@@ -49,6 +49,7 @@ type AppContextType = {
     // Cache
     postsCache: PostsCache;
     setPostsCache: Dispatch<SetStateAction<PostsCache>>;
+    invalidatePostsCache: (period?: string) => void;
     // App settings
     isRedditButtonActive: boolean;
     setRedditButtonActive: Dispatch<SetStateAction<boolean>>;
@@ -88,6 +89,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     // Payment settings
     const [isCancelSubscriptionDialogOpen, setCancelSubscriptionDialogOpen] = useState(false);
 
+    const invalidatePostsCache = (period?: string) => {
+        setPostsCache((prev) => {
+            if (!period) return {}; // invalida tutta la cache
+
+            const newCache = { ...prev };
+            delete newCache[period];
+            return newCache;
+        });
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -115,6 +126,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 //Cache
                 postsCache,
                 setPostsCache,
+                invalidatePostsCache,
                 // App settings
                 isRedditButtonActive,
                 setRedditButtonActive,

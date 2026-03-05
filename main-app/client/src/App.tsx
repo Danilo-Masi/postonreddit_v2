@@ -42,6 +42,7 @@ export default function App() {
       <Route
         path="/settings"
         element={<GuardedRoute access="pro"><Settings /></GuardedRoute>} />
+
     </Routes>
   )
 }

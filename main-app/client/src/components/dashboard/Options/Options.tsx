@@ -6,7 +6,7 @@ import FlairsSelect from "./FlairsSelect";
 import SubredditMultiselect from "./SubredditsMultiselect";
 import ProgressBar from "../ProgressBar";
 
-export default function OptionsContainer() {
+export default function Options() {
   const isMobile = useIsMobile();
   const { subredditTargets } = useAppContext();
 

@@ -20,25 +20,7 @@ interface PostTemplateInterface {
 }
 
 export default function PostTemplate({ post_id, title, content, postTargets, setAlertDeleteOpen }: PostTemplateInterface) {
-    const navigate = useNavigate();
-    const { setPostIdSelected, postsList, setTitlePost, setContentPost, setSubredditTargets } = useAppContext();
-    const [isEditLoading, setEditLoading] = useState(false);
-
-    const handleEditPost = () => {
-        setEditLoading(true);
-        const post = postsList.find((item) => item.id === post_id);
-        if (!post) return;
-        setTitlePost(post.title);
-        setContentPost(post.content);
-        setSubredditTargets((post.targets ?? []).map((target) => ({
-            subreddit: target.subreddit,
-            scheduledAt: target.scheduled_at,
-            flairId: '',
-            flairName: ''
-        })));
-        setEditLoading(false);
-        navigate("/", { replace: true });
-    };
+    const { setPostIdSelected } = useAppContext();
 
     const handleDeletePost = () => {
         setPostIdSelected(post_id);
@@ -72,24 +54,11 @@ export default function PostTemplate({ post_id, title, content, postTargets, set
             <CardContent className="text-zinc-300 text-sm font-light">
                 {content.length > 150 ? content.slice(0, 150) + "..." : content}
             </CardContent>
-            <CardFooter className="flex justify-end gap-3">
-                <Button
-                    disabled={isEditLoading}
-                    onClick={handleEditPost}
-                    className="cursor-pointer disabled:cursor-none">
-                    {isEditLoading
-                        ? (<>
-                            <Spinner /> Loading
-                        </>)
-                        : (<>
-                            <SquarePen /> Edit
-                        </>)
-                    }
-                </Button>
+            <CardFooter className="flex justify-end">
                 <Button
                     onClick={handleDeletePost}
                     variant="destructive"
-                    className="cursor-pointer disabled:cursor-none">
+                    className="w-full md:w-min cursor-pointer disabled:cursor-none">
                     <Ban />Delete
                 </Button>
             </CardFooter>
